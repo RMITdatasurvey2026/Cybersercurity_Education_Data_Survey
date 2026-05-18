@@ -790,10 +790,10 @@ function showGASCode() {
     constructs.forEach(c => { for (let i = 1; i <= 8; i++) headers.push(`${c}_${i}`); });
 
     const code = `// Google Apps Script — Paste into script.google.com
-// Sheet: "Survey Data (Hiep)"
+// Sheet: "Survey Data"
 // Deploy as Web App: Execute as Me, Anyone can access
 
-const SHEET_NAME = "Survey Data (Hiep)";
+const SHEET_NAME = "Survey Data";
 const HEADERS = ${JSON.stringify(headers, null, 2)};
 
 function doPost(e) {
