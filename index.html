@@ -1,661 +1,842 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BẢNG CÂU HỎI KHẢO SÁT – Bình đẳng giới &amp; Chuỗi cung ứng</title>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: "Segoe UI", Arial, sans-serif;
-      background: #f4f6f9;
-      color: #222;
-      font-size: 15px;
-      line-height: 1.6;
-    }
-    /* ── Progress bar ─────────────────────────────────────── */
-    #progress-wrap {
-      position: sticky; top: 0; z-index: 100;
-      background: #fff; border-bottom: 1px solid #dde3ea;
-      padding: 8px 20px;
-    }
-    #progress-label { font-size: 12px; color: #666; margin-bottom: 4px; }
-    #progress-bar-bg {
-      height: 8px; background: #dde3ea; border-radius: 4px; overflow: hidden;
-    }
-    #progress-bar-fill {
-      height: 100%; width: 0%; background: #1a56db;
-      border-radius: 4px; transition: width .3s ease;
-    }
-    /* ── Layout ───────────────────────────────────────────── */
-    .container { max-width: 860px; margin: 0 auto; padding: 30px 20px 60px; }
-    /* ── Header ───────────────────────────────────────────── */
-    .header {
-      background: #1a3c72;
-      color: #fff;
-      border-radius: 10px;
-      padding: 32px 36px;
-      margin-bottom: 28px;
-      text-align: center;
-    }
-    .header h1 { font-size: 1.6rem; margin-bottom: 8px; letter-spacing: .5px; }
-    .header p.sub { font-size: .95rem; opacity: .88; font-style: italic; }
-    .intro-box {
-      background: #eef3fb;
-      border-left: 4px solid #1a56db;
-      border-radius: 6px;
-      padding: 18px 22px;
-      margin-bottom: 28px;
-      font-size: .95rem;
-      white-space: pre-line;
-    }
-    /* ── Section card ─────────────────────────────────────── */
-    .section-card {
-      background: #fff;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0,0,0,.07);
-      margin-bottom: 28px;
-      overflow: hidden;
-    }
-    .section-header {
-      background: #1a3c72;
-      color: #fff;
-      padding: 14px 22px;
-      font-size: 1rem;
-      font-weight: 600;
-    }
-    .section-desc {
-      background: #f0f4ff;
-      padding: 10px 22px;
-      font-size: .88rem;
-      color: #444;
-      border-bottom: 1px solid #dde3ea;
-    }
-    .section-body { padding: 20px 22px; }
-    /* ── Demographic questions ────────────────────────────── */
-    .q-block { margin-bottom: 22px; }
-    .q-block:last-child { margin-bottom: 0; }
-    .q-text {
-      font-weight: 600;
-      margin-bottom: 10px;
-      font-size: .95rem;
-    }
-    .q-num { color: #1a56db; margin-right: 6px; }
-    .radio-group label {
-      display: flex;
-      align-items: flex-start;
-      gap: 8px;
-      padding: 7px 10px;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background .15s;
-      font-size: .92rem;
-    }
-    .radio-group label:hover { background: #f0f4ff; }
-    .radio-group input[type="radio"] { margin-top: 3px; accent-color: #1a56db; }
-    .other-input {
-      display: none;
-      margin-top: 6px;
-      margin-left: 26px;
-      width: calc(100% - 26px);
-      padding: 7px 10px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      font-size: .92rem;
-    }
-    .other-input:focus { outline: none; border-color: #1a56db; }
-    /* ── Likert table ─────────────────────────────────────── */
-    .likert-table { width: 100%; border-collapse: collapse; }
-    .likert-table th {
-      font-size: .78rem;
-      font-weight: 600;
-      text-align: center;
-      padding: 8px 4px;
-      background: #f0f4ff;
-      border: 1px solid #dde3ea;
-      color: #1a3c72;
-      width: 10%;
-    }
-    .likert-table th.q-col { width: 50%; text-align: left; }
-    .likert-table td {
-      border: 1px solid #eef0f3;
-      padding: 10px 4px;
-      text-align: center;
-      vertical-align: middle;
-    }
-    .likert-table td.q-text-cell {
-      text-align: left;
-      padding: 10px 12px;
-      font-size: .9rem;
-    }
-    .likert-table tr:nth-child(even) td { background: #fafbfd; }
-    .likert-table tr:hover td { background: #f0f4ff; }
-    .likert-table input[type="radio"] { accent-color: #1a56db; cursor: pointer; transform: scale(1.2); }
-    /* ── Submit section ───────────────────────────────────── */
-    .submit-section {
-      background: #fff;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0,0,0,.07);
-      padding: 28px 32px;
-      text-align: center;
-    }
-    .submit-note { color: #555; font-size: .88rem; margin-bottom: 18px; }
-    #submit-btn {
-      background: #1a3c72;
-      color: #fff;
-      border: none;
-      padding: 14px 48px;
-      border-radius: 7px;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      letter-spacing: .4px;
-      transition: background .2s;
-    }
-    #submit-btn:hover { background: #1a56db; }
-    #submit-btn:disabled { background: #9ab; cursor: not-allowed; }
-    /* ── Error / success ──────────────────────────────────── */
-    .error-banner {
-      display: none;
-      background: #fff3cd;
-      border: 1px solid #f5c518;
-      color: #7a5800;
-      border-radius: 7px;
-      padding: 14px 18px;
-      margin-bottom: 20px;
-      font-size: .9rem;
-    }
-    .success-page {
-      display: none;
-      text-align: center;
-      padding: 60px 20px;
-    }
-    .success-page h2 { font-size: 1.6rem; color: #1a3c72; margin-bottom: 12px; }
-    .success-page p { color: #555; font-size: 1rem; }
-    /* ── Required star ────────────────────────────────────── */
-    .req { color: #c0392b; margin-left: 3px; }
-    @media (max-width: 600px) {
-      .likert-table th, .likert-table td { font-size: .75rem; padding: 6px 2px; }
-      .header h1 { font-size: 1.2rem; }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- GOOGLE SHEETS: Paste your Apps Script Web App URL below (or set via Admin Panel) -->
+    <meta name="google-script-url" content="https://script.google.com/macros/s/AKfycbzUZNwBUolTUPb7yZzKFw4xfR2tQpL3LcfSu3iQ7oXy0NFeOcqugbS6Oeov-8ToOWfg/exec">
+    <!-- ADMIN PASSWORD HASH (SHA-256). Default password: admin2026 -->
+    <!-- To change: open browser console, run: crypto.subtle.digest('SHA-256',new TextEncoder().encode('YOUR_PASSWORD')).then(b=>console.log([...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join(''))) -->
+    <meta name="admin-password-hash" content="6051fc84a7a0d74c225fb18a496b09952da5642e60723ecae543298edd7d82d6">
+    <title>Phiếu Khảo Sát – Giáo Dục An Ninh Mạng & Giao Tiếp Số</title>
+    <style>
+        :root {
+            --primary: #000054;
+            --primary-light: #1a1a7e;
+            --accent: #e4002b;
+            --bg: #f5f6fa;
+            --card: #ffffff;
+            --text: #2c3e50;
+            --text-light: #6c7a89;
+            --border: #dce1e8;
+            --success: #27ae60;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+        .survey-container { max-width: 860px; margin: 0 auto; padding: 20px; }
+
+        /* Header */
+        .survey-header { background: var(--primary); color: #fff; border-radius: 12px; margin-bottom: 24px; text-align: center; overflow: hidden; }
+        .survey-banner {
+            width: 100%;
+            height: clamp(140px, 28vw, 240px);
+            object-fit: cover;
+            object-position: center 40%;
+            display: block;
+        }
+        .survey-header-content {
+            background: linear-gradient(180deg, rgba(0,0,84,0.72) 0%, rgba(0,0,84,0.96) 40%, var(--primary) 100%);
+            padding: clamp(20px, 4vw, 36px) clamp(16px, 4vw, 36px) clamp(24px, 4vw, 40px);
+            margin-top: -4px;
+        }
+        .survey-header h1 { font-size: clamp(15px, 2.5vw, 20px); font-weight: 700; margin-bottom: 6px; letter-spacing: 0.5px; }
+        .survey-header .subtitle { font-size: clamp(12px, 1.6vw, 14px); opacity: 0.88; max-width: 700px; margin: 12px auto 0; line-height: 1.7; }
+        .survey-header .org { display: inline-block; background: var(--accent); color: #fff; padding: 4px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; margin-bottom: 16px; }
+
+        /* Intro box */
+        .intro-box { background: var(--card); border-radius: 12px; padding: 24px 28px; margin-bottom: 20px; border: 1px solid var(--border); }
+        .intro-box h3 { color: var(--primary); font-size: 15px; margin-bottom: 10px; }
+        .intro-box p, .intro-box li { font-size: 13.5px; color: var(--text); line-height: 1.75; }
+        .intro-box ul { padding-left: 18px; margin-top: 8px; }
+
+        /* Scale legend */
+        .scale-legend { display: flex; gap: 0; margin: 12px 0 0; flex-wrap: wrap; }
+        .scale-item { flex: 1; min-width: 70px; text-align: center; background: #f0f2f8; border: 1px solid var(--border); padding: 8px 4px; }
+        .scale-item:first-child { border-radius: 6px 0 0 6px; }
+        .scale-item:last-child { border-radius: 0 6px 6px 0; }
+        .scale-item .num { font-size: 15px; font-weight: 700; color: var(--primary); display: block; }
+        .scale-item .lbl { font-size: 10px; color: var(--text-light); line-height: 1.3; display: block; }
+
+        /* Progress */
+        .progress-wrap { background: var(--card); border-radius: 10px; padding: 14px 24px; margin-bottom: 20px; border: 1px solid var(--border); display: flex; align-items: center; gap: 14px; }
+        .progress-wrap span { font-size: 13px; font-weight: 600; white-space: nowrap; }
+        .progress-bar { flex: 1; height: 8px; background: #e8eaef; border-radius: 4px; overflow: hidden; }
+        .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--accent)); border-radius: 4px; transition: width 0.4s ease; width: 0%; }
+
+        /* Email / Date field */
+        .date-field { background: var(--card); padding: 16px 24px; border-radius: 10px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px; border: 1px solid var(--border); flex-wrap: wrap; }
+        .date-field label { font-weight: 600; font-size: 14px; white-space: nowrap; }
+        .date-field input { border: 1px solid var(--border); padding: 8px 14px; border-radius: 6px; font-size: 14px; outline: none; transition: border 0.2s; }
+        .date-field input:focus { border-color: var(--primary); }
+
+        /* Section */
+        .section { background: var(--card); border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--border); overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+        .section-header { background: var(--primary); color: #fff; padding: 16px 24px; font-size: 15px; font-weight: 700; }
+        .section-header small { display: block; font-weight: 400; font-size: 12px; opacity: 0.8; margin-top: 4px; }
+        .section-body { padding: 24px; }
+        .section-instruction { font-size: 13px; color: var(--text-light); margin-bottom: 20px; padding: 10px 14px; background: #f0f2f8; border-radius: 8px; border-left: 3px solid var(--primary); }
+
+        /* Question */
+        .question-block { margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid #f0f2f5; }
+        .question-block:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .question-label { font-size: 14px; font-weight: 600; margin-bottom: 12px; display: flex; gap: 8px; }
+        .question-label .q-num { background: var(--primary); color: #fff; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; flex-shrink: 0; margin-top: 1px; }
+
+        /* Radio options (demographics) */
+        .options-list { display: flex; flex-wrap: wrap; gap: 8px 16px; padding-left: 32px; }
+        .options-list label { display: flex; align-items: center; gap: 6px; font-size: 13.5px; cursor: pointer; padding: 6px 12px; border-radius: 6px; border: 1px solid transparent; transition: all 0.15s; }
+        .options-list label:hover { background: #f0f2f8; border-color: var(--border); }
+        .options-list input[type="radio"] { accent-color: var(--primary); width: 16px; height: 16px; }
+
+        /* Likert 7-point */
+        .likert-wrap { padding-left: 32px; margin-top: 6px; }
+        .likert-row { display: flex; align-items: center; gap: 0; }
+        .likert-row .lk-end { font-size: 11px; color: var(--text-light); min-width: 100px; line-height: 1.3; }
+        .likert-row .lk-end.left { text-align: right; padding-right: 10px; }
+        .likert-row .lk-end.right { text-align: left; padding-left: 10px; }
+        .likert-options { display: flex; gap: 0; }
+        .likert-options label { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; padding: 8px 12px; border-radius: 6px; transition: background 0.15s; }
+        .likert-options label:hover { background: #f0f2f8; }
+        .likert-options label span { font-size: 12px; font-weight: 700; color: var(--text-light); }
+        .likert-options input[type="radio"] { accent-color: var(--primary); width: 18px; height: 18px; }
+
+        /* Submit */
+        .submit-area { text-align: center; padding: 30px 0; }
+        .btn { display: inline-flex; align-items: center; gap: 6px; padding: 12px 28px; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; text-decoration: none; }
+        .btn-primary { background: var(--primary); color: #fff; }
+        .btn-primary:hover { background: var(--primary-light); transform: translateY(-1px); }
+        .btn-accent { background: var(--accent); color: #fff; }
+        .btn-accent:hover { opacity: 0.9; }
+        .btn-sm { padding: 8px 16px; font-size: 13px; }
+        .submit-area .btn { min-width: 220px; padding: 14px 36px; font-size: 16px; }
+        .btn[disabled] { opacity: .6; cursor: not-allowed; }
+
+        /* Admin panel */
+        .admin-toggle { position: fixed; bottom: 24px; right: 24px; z-index: 1000; }
+        .admin-panel { display: none; position: fixed; top: 0; right: 0; width: 420px; height: 100vh; background: var(--card); box-shadow: -4px 0 20px rgba(0,0,0,0.12); z-index: 999; overflow-y: auto; padding: 28px; }
+        .admin-panel.active { display: block; }
+        .admin-panel h3 { font-size: 18px; margin-bottom: 20px; color: var(--primary); }
+        .admin-panel .form-group { margin-bottom: 16px; }
+        .admin-panel .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+        .admin-panel .form-group input { width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; outline: none; }
+        .admin-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 998; }
+        .admin-overlay.active { display: block; }
+        .config-box { background: #f8f9fc; border: 1px solid var(--border); border-radius: 8px; padding: 14px; margin-bottom: 16px; }
+        .config-box h5 { font-size: 13px; margin-bottom: 8px; color: var(--primary); }
+        .config-box input { width: 100%; padding: 7px 10px; border: 1px solid var(--border); border-radius: 5px; font-size: 12px; font-family: monospace; }
+        .config-box .hint { font-size: 11px; color: var(--text-light); margin-top: 6px; line-height: 1.5; }
+        .status-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; padding: 4px 12px; border-radius: 12px; font-weight: 600; }
+        .status-badge.online { background: #e8f8ef; color: #27ae60; }
+        .status-badge.offline { background: #fde8ec; color: #e74c3c; }
+        .status-badge .dot { width: 7px; height: 7px; border-radius: 50%; }
+        .status-badge.online .dot { background: #27ae60; }
+        .status-badge.offline .dot { background: #e74c3c; }
+
+        /* Toast */
+        .toast { position: fixed; top: 24px; right: 24px; background: var(--success); color: #fff; padding: 14px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; z-index: 2000; display: none; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .toast.show { display: block; animation: slideIn 0.3s ease; }
+        .toast.error { background: #e74c3c; }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+        /* Spinner */
+        .spinner { display: inline-block; width: 18px; height: 18px; border: 2.5px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin .6s linear infinite; vertical-align: middle; margin-right: 6px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Thank you */
+        .thank-you { display: none; text-align: center; padding: 60px 30px; background: var(--card); border-radius: 12px; border: 1px solid var(--border); }
+        .thank-you h2 { color: var(--primary); margin-bottom: 12px; font-size: 22px; }
+        .thank-you p { color: var(--text-light); font-size: 15px; }
+
+        /* Required highlight */
+        .req-error .question-label { color: var(--accent); }
+        .req-error .likert-wrap, .req-error .options-list { outline: 2px dashed var(--accent); border-radius: 6px; padding: 6px; }
+
+        @media (max-width: 640px) {
+            .survey-container { padding: 12px; }
+            .survey-banner { height: clamp(100px, 40vw, 160px); object-position: center 35%; }
+            .survey-header h1 { font-size: 15px; }
+            .section-body { padding: 16px; }
+            .likert-row { flex-wrap: wrap; }
+            .likert-row .lk-end { min-width: auto; width: 100%; text-align: left; padding: 0 0 4px; }
+            .likert-options label { padding: 8px 8px; }
+            .options-list { padding-left: 0; }
+            .admin-panel { width: 100%; }
+            .scale-legend { gap: 2px; }
+            .scale-item .lbl { font-size: 9px; }
+        }
+    </style>
 </head>
 <body>
+<div class="survey-container">
 
-<!-- Progress bar -->
-<div id="progress-wrap">
-  <div id="progress-label">Tiến độ: <span id="pct">0</span>%</div>
-  <div id="progress-bar-bg"><div id="progress-bar-fill"></div></div>
+    <!-- ========== HEADER ========== -->
+    <div class="survey-header">
+        <img src="rmit-banner.jpg" alt="RMIT Vietnam Campus" class="survey-banner" onerror="this.style.display='none'">
+        <div class="survey-header-content">
+            <div class="org">NGHIÊN CỨU HỌC THUẬT</div>
+            <h1>PHIẾU KHẢO SÁT</h1>
+            <h1 style="font-size:15px;font-weight:400;margin-top:6px;">
+                Giáo Dục An Ninh Mạng và Giao Tiếp Số trong Doanh Nghiệp<br>
+                <span style="opacity:0.8;font-size:13px;">Cybersecurity Education &amp; Digital Communication in Enterprises</span>
+            </h1>
+            <p class="subtitle">
+                Chúng tôi đang thực hiện nghiên cứu về cách nhân viên và nhà quản lý thích nghi với các hình thức giao tiếp số ngày càng phức tạp trong bối cảnh công nghệ AI và nội dung số do AI tạo ra phát triển nhanh chóng. Mời Anh/Chị tham gia khảo sát — thời gian thực hiện khoảng 10–15 phút.
+            </p>
+        </div>
+    </div>
+
+    <!-- ========== INTRO / SCALE LEGEND ========== -->
+    <div class="intro-box">
+        <h3>📋 Hướng dẫn trả lời</h3>
+        <p>Vui lòng đọc kỹ từng phát biểu và lựa chọn mức độ đồng ý phù hợp nhất với trải nghiệm thực tế của Anh/Chị tại doanh nghiệp. Khảo sát sử dụng <strong>thang đo Likert 7 điểm</strong>:</p>
+        <div class="scale-legend">
+            <div class="scale-item"><span class="num">1</span><span class="lbl">Hoàn toàn không đồng ý</span></div>
+            <div class="scale-item"><span class="num">2</span><span class="lbl">Không đồng ý</span></div>
+            <div class="scale-item"><span class="num">3</span><span class="lbl">Hơi không đồng ý</span></div>
+            <div class="scale-item"><span class="num">4</span><span class="lbl">Trung lập</span></div>
+            <div class="scale-item"><span class="num">5</span><span class="lbl">Hơi đồng ý</span></div>
+            <div class="scale-item"><span class="num">6</span><span class="lbl">Đồng ý</span></div>
+            <div class="scale-item"><span class="num">7</span><span class="lbl">Hoàn toàn đồng ý</span></div>
+        </div>
+        <ul style="margin-top:14px;">
+            <li>Không có câu trả lời đúng hay sai.</li>
+            <li>Mọi thông tin thu thập sẽ được bảo mật và chỉ sử dụng cho mục đích nghiên cứu.</li>
+            <li>Vui lòng trả lời dựa trên cảm nhận và trải nghiệm thực tế của Anh/Chị.</li>
+        </ul>
+    </div>
+
+    <!-- ========== PROGRESS ========== -->
+    <div class="progress-wrap">
+        <span id="progress-text">0%</span>
+        <div class="progress-bar"><div class="progress-bar-fill" id="progress-fill"></div></div>
+    </div>
+
+    <form id="surveyForm" novalidate>
+
+        <!-- Email (optional) -->
+        <div class="date-field">
+            <label for="respondent_email">📧 Email (tùy chọn):</label>
+            <input type="email" id="respondent_email" name="respondent_email" placeholder="email@company.com" style="flex:1;min-width:200px;">
+            <label for="survey_date">📅 Ngày:</label>
+            <input type="date" id="survey_date" name="survey_date">
+        </div>
+
+        <!-- ========== PHẦN I: THÔNG TIN CHUNG ========== -->
+        <div class="section">
+            <div class="section-header">
+                PHẦN I: THÔNG TIN CHUNG
+                <small>General Information — Vui lòng chọn mô tả phù hợp nhất với Anh/Chị</small>
+            </div>
+            <div class="section-body">
+
+                <!-- Q: Giới tính -->
+                <div class="question-block" id="block_info_gender">
+                    <div class="question-label">
+                        <span class="q-num">1</span>
+                        <span>Giới tính của Anh/Chị:</span>
+                    </div>
+                    <div class="options-list">
+                        <label><input type="radio" name="info_gender" value="1"> Nam</label>
+                        <label><input type="radio" name="info_gender" value="2"> Nữ</label>
+                    </div>
+                </div>
+
+                <!-- Q: Độ tuổi -->
+                <div class="question-block" id="block_info_age">
+                    <div class="question-label">
+                        <span class="q-num">2</span>
+                        <span>Độ tuổi của Anh/Chị:</span>
+                    </div>
+                    <div class="options-list">
+                        <label><input type="radio" name="info_age" value="1"> 18 – 24</label>
+                        <label><input type="radio" name="info_age" value="2"> 25 – 34</label>
+                        <label><input type="radio" name="info_age" value="3"> 36 – 45</label>
+                        <label><input type="radio" name="info_age" value="4"> Trên 45</label>
+                    </div>
+                </div>
+
+                <!-- Q: Vị trí -->
+                <div class="question-block" id="block_info_position">
+                    <div class="question-label">
+                        <span class="q-num">3</span>
+                        <span>Vị trí công tác hiện tại của Anh/Chị:</span>
+                    </div>
+                    <div class="options-list" style="flex-direction:column;gap:6px;">
+                        <label><input type="radio" name="info_position" value="1"> Nhân viên</label>
+                        <label><input type="radio" name="info_position" value="2"> Quản lý cấp cơ sở</label>
+                        <label><input type="radio" name="info_position" value="3"> Quản lý cấp trung / cao</label>
+                        <label><input type="radio" name="info_position" value="4"> Giám đốc / CEO</label>
+                        <label><input type="radio" name="info_position" value="5"> Khác</label>
+                    </div>
+                </div>
+
+                <!-- Q: Thâm niên cá nhân -->
+                <div class="question-block" id="block_info_exp">
+                    <div class="question-label">
+                        <span class="q-num">4</span>
+                        <span>Thâm niên làm việc của Anh/Chị:</span>
+                    </div>
+                    <div class="options-list">
+                        <label><input type="radio" name="info_exp" value="1"> Dưới 1 năm</label>
+                        <label><input type="radio" name="info_exp" value="2"> 1 – 3 năm</label>
+                        <label><input type="radio" name="info_exp" value="3"> 3 – 5 năm</label>
+                        <label><input type="radio" name="info_exp" value="4"> Trên 5 năm</label>
+                    </div>
+                </div>
+
+                <!-- Q: Lĩnh vực -->
+                <div class="question-block" id="block_info_industry">
+                    <div class="question-label">
+                        <span class="q-num">5</span>
+                        <span>Công ty của Anh/Chị hoạt động trong lĩnh vực nào? (Chọn 1 mô tả phù hợp nhất):</span>
+                    </div>
+                    <div class="options-list" style="flex-direction:column;gap:6px;">
+                        <label><input type="radio" name="info_industry" value="1"> Tài chính – Ngân hàng – Bảo hiểm</label>
+                        <label><input type="radio" name="info_industry" value="2"> Công nghệ thông tin và Viễn thông</label>
+                        <label><input type="radio" name="info_industry" value="3"> Giáo dục và Đào tạo</label>
+                        <label><input type="radio" name="info_industry" value="4"> Logistics và Quản lý chuỗi cung ứng</label>
+                        <label><input type="radio" name="info_industry" value="5"> Dịch vụ chuyên môn (Tư vấn, Kiểm toán, Pháp lý)</label>
+                        <label><input type="radio" name="info_industry" value="6"> Khác</label>
+                    </div>
+                </div>
+
+                <!-- Q: Quy mô công ty -->
+                <div class="question-block" id="block_info_company_size">
+                    <div class="question-label">
+                        <span class="q-num">6</span>
+                        <span>Quy mô công ty của Anh/Chị hiện nay:</span>
+                    </div>
+                    <div class="options-list" style="flex-direction:column;gap:6px;">
+                        <label><input type="radio" name="info_company_size" value="1"> Dưới 10 người</label>
+                        <label><input type="radio" name="info_company_size" value="2"> Từ 11 đến 100 người</label>
+                        <label><input type="radio" name="info_company_size" value="3"> Từ 101 đến 200 người</label>
+                        <label><input type="radio" name="info_company_size" value="4"> Trên 200 người</label>
+                    </div>
+                </div>
+
+                <!-- Q: Thâm niên công ty -->
+                <div class="question-block" id="block_info_company_age">
+                    <div class="question-label">
+                        <span class="q-num">7</span>
+                        <span>Thâm niên hoạt động của công ty Anh/Chị:</span>
+                    </div>
+                    <div class="options-list">
+                        <label><input type="radio" name="info_company_age" value="1"> Dưới 1 năm</label>
+                        <label><input type="radio" name="info_company_age" value="2"> 1 – 3 năm</label>
+                        <label><input type="radio" name="info_company_age" value="3"> 3 – 5 năm</label>
+                        <label><input type="radio" name="info_company_age" value="4"> 5 – 10 năm</label>
+                        <label><input type="radio" name="info_company_age" value="5"> Trên 10 năm</label>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ========== LIKERT SECTIONS (A–J) rendered by JS ========== -->
+        <div id="likert-sections"></div>
+
+        <!-- ========== SUBMIT ========== -->
+        <div class="submit-area">
+            <button type="submit" class="btn btn-primary" id="submitBtn">
+                &#128229; Gửi Phiếu Khảo Sát
+            </button>
+            <p style="margin-top:12px;font-size:13px;color:var(--text-light);">
+                Vui lòng kiểm tra lại tất cả câu trả lời trước khi gửi.
+            </p>
+        </div>
+
+    </form>
+
+    <!-- Thank you -->
+    <div class="thank-you" id="thankYou">
+        <div style="font-size:48px;margin-bottom:16px;">🎉</div>
+        <h2>Cảm ơn Anh/Chị đã tham gia!</h2>
+        <p>Phản hồi của Anh/Chị đã được ghi nhận thành công.<br>
+        Đóng góp của Anh/Chị có ý nghĩa rất quan trọng đối với nghiên cứu của chúng tôi.</p>
+        <p style="margin-top:20px;font-style:italic;font-size:13px;">Nhóm nghiên cứu xin chân thành cảm ơn.</p>
+    </div>
+
 </div>
 
-<div class="container">
+<!-- Admin Toggle -->
+<div class="admin-toggle">
+    <button class="btn btn-accent btn-sm" onclick="toggleAdmin()" title="Quản trị">&#9881; Quản trị</button>
+</div>
 
-  <!-- Header -->
-  <div class="header">
-    <h1>BẢNG CÂU HỎI KHẢO SÁT</h1>
-    <p class="sub">Dự án nghiên cứu: Bình đẳng giới và bất bình đẳng trong quản trị chuỗi cung ứng</p>
-  </div>
+<!-- Admin Overlay -->
+<div class="admin-overlay" id="adminOverlay" onclick="toggleAdmin()"></div>
 
-  <!-- Intro -->
-  <div class="intro-box">Kính thưa Quý Ông/Bà,
+<!-- Admin Panel -->
+<div class="admin-panel" id="adminPanel">
+    <h3>⚙ Quản Trị Khảo Sát</h3>
 
-Chúng tôi là nhóm nghiên cứu đến từ Trường Đại học RMIT Việt Nam, hiện đang triển khai dự án nghiên cứu về bình đẳng giới trong quản trị chuỗi cung ứng tại Việt Nam.
-
-Chúng tôi trân trọng kính mời Quý Ông/Bà tham gia thực hiện bảng câu hỏi khảo sát này. Thời gian thực hiện khoảng 10–15 phút. Mọi thông tin cá nhân sẽ được bảo mật tuyệt đối và chỉ sử dụng cho mục đích nghiên cứu.
-
-Chúng tôi xin chân thành cảm ơn sự hỗ trợ và hợp tác của Quý Ông/Bà.</div>
-
-  <!-- ════════════════════════════════════════════════════════
-       FORM
-       Replace YOUR_FORM_ID below with your Formspree form ID
-       Sign up free at https://formspree.io
-       ════════════════════════════════════════════════════════ -->
-  <div id="error-banner" class="error-banner"></div>
-
-  <form id="survey-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST" novalidate>
-
-    <!-- Hidden timestamp -->
-    <input type="hidden" name="timestamp" id="field-timestamp" />
-
-    <!-- ── PHẦN I: THÔNG TIN VỀ ĐÁP VIÊN ─────────────────── -->
-    <div class="section-card">
-      <div class="section-header">PHẦN I: THÔNG TIN VỀ ĐÁP VIÊN</div>
-      <div class="section-body">
-
-        <!-- Q1 -->
-        <div class="q-block">
-          <div class="q-text"><span class="q-num">1.</span>Giới tính của đáp viên là:<span class="req">*</span></div>
-          <div class="radio-group">
-            <label><input type="radio" name="q_info_1" value="1" required /> Nam</label>
-            <label><input type="radio" name="q_info_1" value="2" /> Nữ</label>
-            <label><input type="radio" name="q_info_1" value="3" /> Khác</label>
-          </div>
+    <div id="adminLoginSection">
+        <div class="form-group">
+            <label>Mật khẩu quản trị</label>
+            <input type="password" id="adminPassword" placeholder="Nhập mật khẩu..." onkeydown="if(event.key==='Enter')verifyAdmin()">
         </div>
+        <button class="btn btn-primary btn-sm" onclick="verifyAdmin()" style="width:100%">Đăng nhập</button>
+    </div>
 
-        <!-- Q2 -->
-        <div class="q-block">
-          <div class="q-text"><span class="q-num">2.</span>Cấp bậc công việc hiện tại của đáp viên trong tổ chức là gì:<span class="req">*</span></div>
-          <div class="radio-group">
-            <label><input type="radio" name="q_info_2" value="1" required /> Nhân viên vận hành / Nhân viên mới</label>
-            <label><input type="radio" name="q_info_2" value="2" /> Nhân viên cấp cao / Chuyên viên</label>
-            <label><input type="radio" name="q_info_2" value="3" /> Giám sát / Trưởng nhóm</label>
-            <label><input type="radio" name="q_info_2" value="4" /> Quản lý cấp trung</label>
-            <label><input type="radio" name="q_info_2" value="5" /> Quản lý cấp cao / Giám đốc</label>
-            <label><input type="radio" name="q_info_2" value="6" /> Ban lãnh đạo điều hành (Phó Chủ tịch / Cấp C)</label>
-          </div>
+    <div id="adminContent" style="display:none;">
+        <div class="config-box">
+            <h5>🔗 Google Apps Script URL</h5>
+            <div style="margin-bottom:8px;">
+                Trạng thái: <span id="urlStatus" class="status-badge offline"><span class="dot"></span>Chưa cấu hình</span>
+            </div>
+            <input type="text" id="googleScriptUrl" placeholder="https://script.google.com/macros/s/.../exec" value="">
+            <div class="hint">
+                Dán URL từ Google Apps Script Web App (Deploy → Web App → URL).<br>
+                Dữ liệu sẽ được ghi vào Google Sheets.
+            </div>
         </div>
-
-        <!-- Q3 -->
-        <div class="q-block">
-          <div class="q-text"><span class="q-num">3.</span>Doanh nghiệp của đáp viên chủ yếu hoạt động trong lĩnh vực nào?<span class="req">*</span></div>
-          <div class="radio-group">
-            <label><input type="radio" name="q_info_3" value="1" required /> Sản xuất / Sản xuất công nghiệp</label>
-            <label><input type="radio" name="q_info_3" value="2" /> Logistics / Vận tải / Kho bãi</label>
-            <label><input type="radio" name="q_info_3" value="3" /> Bán lẻ / Thương mại điện tử / Phân phối</label>
-            <label><input type="radio" name="q_info_3" value="4" /> Nông nghiệp / Chuỗi cung ứng thực phẩm</label>
-            <label><input type="radio" name="q_info_3" value="5" /> Công nghệ / Nền tảng số</label>
-            <label><input type="radio" name="q_info_3" value="6" /> Năng lượng / Dịch vụ tiện ích</label>
-            <label><input type="radio" name="q_info_3" value="7" /> Y tế / Dược phẩm</label>
-            <label>
-              <input type="radio" name="q_info_3" value="8" onchange="toggleOther(this,'other_q3')" />
-              Khác (vui lòng ghi rõ)
-            </label>
-            <input type="text" id="other_q3" name="q_info_3_other" class="other-input" placeholder="Vui lòng ghi rõ…" />
-          </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="btn btn-primary btn-sm" onclick="saveGoogleUrl()" style="flex:1">💾 Lưu URL</button>
+            <button class="btn btn-sm btn-outline" onclick="testConnection()" style="flex:1">🔄 Kiểm tra</button>
+            <button class="btn btn-sm" style="background:#eee;color:#666;flex:1" onclick="clearGoogleUrl()">🗑 Xóa URL</button>
         </div>
-
-        <!-- Q4 -->
-        <div class="q-block">
-          <div class="q-text"><span class="q-num">4.</span>Ông/bà đánh giá mức độ trưởng thành về kỹ thuật số trong chuỗi cung ứng của tổ chức mình như thế nào?<span class="req">*</span></div>
-          <div class="radio-group">
-            <label><input type="radio" name="q_info_4" value="1" required /> Rất thấp (Chủ yếu là các quy trình thủ công)</label>
-            <label><input type="radio" name="q_info_4" value="2" /> Thấp (Sử dụng hạn chế các công cụ kỹ thuật số)</label>
-            <label><input type="radio" name="q_info_4" value="3" /> Trung bình (Công cụ kỹ thuật số được sử dụng trong một vài quy trình)</label>
-            <label><input type="radio" name="q_info_4" value="4" /> Cao (Các hệ thống kỹ thuật số đã được tích hợp)</label>
-            <label><input type="radio" name="q_info_4" value="5" /> Rất cao (Vận hành dựa trên trí tuệ nhân tạo AI và dữ liệu)</label>
-          </div>
+        <div style="margin-top:16px;border-top:1px solid var(--border);padding-top:14px;">
+            <button class="btn btn-sm" style="background:#f0f2f8;color:var(--primary);width:100%;" onclick="showGASCode()">📄 Xem Google Apps Script mẫu</button>
         </div>
-
-        <!-- Q5 -->
-        <div class="q-block">
-          <div class="q-text"><span class="q-num">5.</span>Tổ chức của đáp viên sử dụng công nghệ AI trong quản trị chuỗi cung ứng ở mức độ nào?<span class="req">*</span></div>
-          <div class="radio-group">
-            <label><input type="radio" name="q_info_5" value="1" required /> Chưa áp dụng AI</label>
-            <label><input type="radio" name="q_info_5" value="2" /> Đang trong giai đoạn thử nghiệm / Dự án thí điểm</label>
-            <label><input type="radio" name="q_info_5" value="3" /> Áp dụng ở mức độ hạn chế</label>
-            <label><input type="radio" name="q_info_5" value="4" /> Áp dụng ở mức độ trung bình</label>
-            <label><input type="radio" name="q_info_5" value="5" /> Áp dụng rộng rãi các hoạt động chuỗi cung ứng dựa trên AI</label>
-          </div>
+        <div style="margin-top:10px;">
+            <button class="btn btn-sm btn-accent" onclick="closeAdmin()" style="width:100%">✕ Đóng</button>
         </div>
-
-        <!-- Q6 -->
-        <div class="q-block">
-          <div class="q-text"><span class="q-num">6.</span>Quy mô doanh nghiệp của đáp viên:<span class="req">*</span></div>
-          <div class="radio-group">
-            <label><input type="radio" name="q_info_6" value="1" required /> Doanh nghiệp siêu nhỏ (1–10 nhân viên)</label>
-            <label><input type="radio" name="q_info_6" value="2" /> Doanh nghiệp nhỏ (11–50 nhân viên)</label>
-            <label><input type="radio" name="q_info_6" value="3" /> Doanh nghiệp vừa (51–250 nhân viên)</label>
-            <label><input type="radio" name="q_info_6" value="4" /> Doanh nghiệp lớn (251–1000 nhân viên)</label>
-            <label><input type="radio" name="q_info_6" value="5" /> Doanh nghiệp rất lớn (trên 1000 nhân viên)</label>
-          </div>
-        </div>
-
-        <!-- Q7 -->
-        <div class="q-block">
-          <div class="q-text"><span class="q-num">7.</span>Số năm kinh nghiệm của ông/bà trong lĩnh vực chuỗi cung ứng?<span class="req">*</span></div>
-          <div class="radio-group">
-            <label><input type="radio" name="q_info_7" value="1" required /> Dưới 2 năm</label>
-            <label><input type="radio" name="q_info_7" value="2" /> Từ 2–5 năm</label>
-            <label><input type="radio" name="q_info_7" value="3" /> Từ 6–10 năm</label>
-            <label><input type="radio" name="q_info_7" value="4" /> Từ 11–15 năm</label>
-            <label><input type="radio" name="q_info_7" value="5" /> Trên 15 năm</label>
-          </div>
-        </div>
-
-        <!-- Q8 -->
-        <div class="q-block">
-          <div class="q-text"><span class="q-num">8.</span>Mức độ trưởng thành về ESG (Môi trường – Xã hội – Quản trị) của doanh nghiệp mình là:<span class="req">*</span></div>
-          <div class="radio-group">
-            <label><input type="radio" name="q_info_8" value="1" required /> Chưa có chính sách ESG</label>
-            <label><input type="radio" name="q_info_8" value="2" /> Các sáng kiến ESG đang ở giai đoạn đầu/sơ khai</label>
-            <label><input type="radio" name="q_info_8" value="3" /> Có chính sách ESG trong một số lĩnh vực cụ thể</label>
-            <label><input type="radio" name="q_info_8" value="4" /> Chiến lược ESG được thiết lập bài bản/vững chắc</label>
-            <label><input type="radio" name="q_info_8" value="5" /> Quản trị ESG được tích hợp hoàn toàn vào hoạt động tổ chức</label>
-          </div>
-        </div>
-
-        <!-- Q9 -->
-        <div class="q-block">
-          <div class="q-text"><span class="q-num">9.</span>Chức năng chính trong chuỗi cung ứng của doanh nghiệp mình là:<span class="req">*</span></div>
-          <div class="radio-group">
-            <label><input type="radio" name="q_info_9" value="1" required /> Thu mua / Cung ứng vật tư</label>
-            <label><input type="radio" name="q_info_9" value="2" /> Sản xuất / Vận hành</label>
-            <label><input type="radio" name="q_info_9" value="3" /> Logistics / Vận tải</label>
-            <label><input type="radio" name="q_info_9" value="4" /> Lập kế hoạch chuỗi cung ứng</label>
-            <label><input type="radio" name="q_info_9" value="5" /> Quản trị phát triển bền vững / ESG</label>
-            <label><input type="radio" name="q_info_9" value="6" /> Phân tích dữ liệu / Chuỗi cung ứng số</label>
-            <label><input type="radio" name="q_info_9" value="7" /> Quản lý điều hành</label>
-          </div>
-        </div>
-
-      </div>
-    </div><!-- /demographic card -->
-
-    <!-- ── LIKERT HELPER MACRO ──────────────────────────────
-         Scale labels (col headers):
-         1=Hoàn toàn không đồng ý  2=Không đồng ý  3=Trung lập
-         4=Đồng ý  5=Hoàn toàn đồng ý
-    ─────────────────────────────────────────────────────── -->
-
-    <!-- ── SEI ─────────────────────────────────────────────── -->
-    <div class="section-card">
-      <div class="section-header">PHẦN II: BẤT BÌNH ĐẲNG VỀ CẤU TRÚC VÀ KINH TẾ XÃ HỘI (SEI)</div>
-      <div class="section-desc">Đánh giá bất bình đẳng về cấu trúc và kinh tế xã hội tại công ty nơi đáp viên làm việc</div>
-      <div class="section-body">
-        <table class="likert-table">
-          <thead>
-            <tr>
-              <th class="q-col">Câu hỏi</th>
-              <th>Hoàn toàn không đồng ý</th><th>Không đồng ý</th><th>Trung lập</th><th>Đồng ý</th><th>Hoàn toàn đồng ý</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr><td class="q-text-cell">1. Sự khác biệt về cơ hội giáo dục ảnh hưởng đến khả năng thăng tiến nghề nghiệp trong các vị trí chuỗi cung ứng.</td><td><input type="radio" name="sei_1" value="1" required /></td><td><input type="radio" name="sei_1" value="2" /></td><td><input type="radio" name="sei_1" value="3" /></td><td><input type="radio" name="sei_1" value="4" /></td><td><input type="radio" name="sei_1" value="5" /></td></tr>
-            <tr><td class="q-text-cell">2. Bất bình đẳng về thu nhập ảnh hưởng đến khả năng tiếp cận các cơ hội lãnh đạo của nhân viên.</td><td><input type="radio" name="sei_2" value="1" required /></td><td><input type="radio" name="sei_2" value="2" /></td><td><input type="radio" name="sei_2" value="3" /></td><td><input type="radio" name="sei_2" value="4" /></td><td><input type="radio" name="sei_2" value="5" /></td></tr>
-            <tr><td class="q-text-cell">3. Nền tảng kinh tế xã hội định hình khả năng dịch chuyển nghề nghiệp (thay đổi vị trí/thăng chức) trong các tổ chức chuỗi cung ứng.</td><td><input type="radio" name="sei_3" value="1" required /></td><td><input type="radio" name="sei_3" value="2" /></td><td><input type="radio" name="sei_3" value="3" /></td><td><input type="radio" name="sei_3" value="4" /></td><td><input type="radio" name="sei_3" value="5" /></td></tr>
-            <tr><td class="q-text-cell">4. Sắc tộc hoặc tầng lớp xã hội ảnh hưởng đến các cơ hội phát triển chuyên môn trong ngành chuỗi cung ứng.</td><td><input type="radio" name="sei_4" value="1" required /></td><td><input type="radio" name="sei_4" value="2" /></td><td><input type="radio" name="sei_4" value="3" /></td><td><input type="radio" name="sei_4" value="4" /></td><td><input type="radio" name="sei_4" value="5" /></td></tr>
-            <tr><td class="q-text-cell">5. Việc tiếp cận không bình đẳng các chương trình đào tạo chuyên môn ảnh hưởng đến sự thăng tiến trong các vai trò chuỗi cung ứng.</td><td><input type="radio" name="sei_5" value="1" required /></td><td><input type="radio" name="sei_5" value="2" /></td><td><input type="radio" name="sei_5" value="3" /></td><td><input type="radio" name="sei_5" value="4" /></td><td><input type="radio" name="sei_5" value="5" /></td></tr>
-            <tr><td class="q-text-cell">6. Nhân viên có hoàn cảnh kinh tế xã hội khó khăn phải đối mặt với nhiều rào cản hơn trong con đường sự nghiệp của ngành chuỗi cung ứng.</td><td><input type="radio" name="sei_6" value="1" required /></td><td><input type="radio" name="sei_6" value="2" /></td><td><input type="radio" name="sei_6" value="3" /></td><td><input type="radio" name="sei_6" value="4" /></td><td><input type="radio" name="sei_6" value="5" /></td></tr>
-            <tr><td class="q-text-cell">7. Bất bình đẳng xã hội có tác động đến các quyết định tuyển dụng và thăng tiến trong các tổ chức chuỗi cung ứng.</td><td><input type="radio" name="sei_7" value="1" required /></td><td><input type="radio" name="sei_7" value="2" /></td><td><input type="radio" name="sei_7" value="3" /></td><td><input type="radio" name="sei_7" value="4" /></td><td><input type="radio" name="sei_7" value="5" /></td></tr>
-          </tbody>
-        </table>
-      </div>
     </div>
+</div>
 
-    <!-- ── LWI ─────────────────────────────────────────────── -->
-    <div class="section-card">
-      <div class="section-header">PHẦN III: BẤT BÌNH ĐẲNG VỀ GIỚI TÍNH VÀ LAO ĐỘNG (LWI)</div>
-      <div class="section-desc">Đánh giá sự bất bình đẳng về giới tính và lao động tại công ty nơi đáp viên đang đi làm</div>
-      <div class="section-body">
-        <table class="likert-table">
-          <thead>
-            <tr>
-              <th class="q-col">Câu hỏi</th>
-              <th>Hoàn toàn không đồng ý</th><th>Không đồng ý</th><th>Trung lập</th><th>Đồng ý</th><th>Hoàn toàn đồng ý</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr><td class="q-text-cell">1. Khoảng cách thu nhập theo giới tính vẫn tồn tại trong các vị trí chuỗi cung ứng tại tổ chức của tôi.</td><td><input type="radio" name="lwi_1" value="1" required /></td><td><input type="radio" name="lwi_1" value="2" /></td><td><input type="radio" name="lwi_1" value="3" /></td><td><input type="radio" name="lwi_1" value="4" /></td><td><input type="radio" name="lwi_1" value="5" /></td></tr>
-            <tr><td class="q-text-cell">2. Một số vai trò nhất định trong chuỗi cung ứng đang bị chiếm ưu thế bởi một giới tính cụ thể.</td><td><input type="radio" name="lwi_2" value="1" required /></td><td><input type="radio" name="lwi_2" value="2" /></td><td><input type="radio" name="lwi_2" value="3" /></td><td><input type="radio" name="lwi_2" value="4" /></td><td><input type="radio" name="lwi_2" value="5" /></td></tr>
-            <tr><td class="q-text-cell">3. Phụ nữ đối mặt với nhiều rào cản hơn trong việc thăng tiến sự nghiệp ngành chuỗi cung ứng.</td><td><input type="radio" name="lwi_3" value="1" required /></td><td><input type="radio" name="lwi_3" value="2" /></td><td><input type="radio" name="lwi_3" value="3" /></td><td><input type="radio" name="lwi_3" value="4" /></td><td><input type="radio" name="lwi_3" value="5" /></td></tr>
-            <tr><td class="q-text-cell">4. Các hình thức làm việc phi chính thức hoặc bấp bênh thường phổ biến hơn đối với lao động nữ trong ngành chuỗi cung ứng.</td><td><input type="radio" name="lwi_4" value="1" required /></td><td><input type="radio" name="lwi_4" value="2" /></td><td><input type="radio" name="lwi_4" value="3" /></td><td><input type="radio" name="lwi_4" value="4" /></td><td><input type="radio" name="lwi_4" value="5" /></td></tr>
-            <tr><td class="q-text-cell">5. Phụ nữ đảm nhận các vai trò trong chuỗi cung ứng thường nhận được ít cơ hội phát triển nghề nghiệp hơn.</td><td><input type="radio" name="lwi_5" value="1" required /></td><td><input type="radio" name="lwi_5" value="2" /></td><td><input type="radio" name="lwi_5" value="3" /></td><td><input type="radio" name="lwi_5" value="4" /></td><td><input type="radio" name="lwi_5" value="5" /></td></tr>
-            <tr><td class="q-text-cell">6. Có sự khác biệt về giới tính trong việc tiếp cận các nhiệm vụ chiến lược hoặc các nhiệm vụ có giá trị cao trong chuỗi cung ứng.</td><td><input type="radio" name="lwi_6" value="1" required /></td><td><input type="radio" name="lwi_6" value="2" /></td><td><input type="radio" name="lwi_6" value="3" /></td><td><input type="radio" name="lwi_6" value="4" /></td><td><input type="radio" name="lwi_6" value="5" /></td></tr>
-            <tr><td class="q-text-cell">7. Nhân viên nữ gặp nhiều thách thức hơn trong việc đạt được sự ổn định nghề nghiệp lâu dài trong ngành chuỗi cung ứng.</td><td><input type="radio" name="lwi_7" value="1" required /></td><td><input type="radio" name="lwi_7" value="2" /></td><td><input type="radio" name="lwi_7" value="3" /></td><td><input type="radio" name="lwi_7" value="4" /></td><td><input type="radio" name="lwi_7" value="5" /></td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- ── PGI ─────────────────────────────────────────────── -->
-    <div class="section-card">
-      <div class="section-header">PHẦN IV: BẤT BÌNH ĐẲNG VỀ QUYỀN LỰC &amp; QUẢN TRỊ (PGI)</div>
-      <div class="section-desc">Đánh giá sự bất bình đẳng về quyền lực &amp; quản trị tại công ty nơi đáp viên đang đi làm</div>
-      <div class="section-body">
-        <table class="likert-table">
-          <thead>
-            <tr>
-              <th class="q-col">Câu hỏi</th>
-              <th>Hoàn toàn không đồng ý</th><th>Không đồng ý</th><th>Trung lập</th><th>Đồng ý</th><th>Hoàn toàn đồng ý</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr><td class="q-text-cell">1. Quyền ra quyết định trong quản trị chuỗi cung ứng phần lớn nằm trong tay nam giới.</td><td><input type="radio" name="pgi_1" value="1" required /></td><td><input type="radio" name="pgi_1" value="2" /></td><td><input type="radio" name="pgi_1" value="3" /></td><td><input type="radio" name="pgi_1" value="4" /></td><td><input type="radio" name="pgi_1" value="5" /></td></tr>
-            <tr><td class="q-text-cell">2. Phụ nữ chưa được đại diện tương xứng (tỷ lệ thấp) trong các vị trí lãnh đạo chiến lược của chuỗi cung ứng.</td><td><input type="radio" name="pgi_2" value="1" required /></td><td><input type="radio" name="pgi_2" value="2" /></td><td><input type="radio" name="pgi_2" value="3" /></td><td><input type="radio" name="pgi_2" value="4" /></td><td><input type="radio" name="pgi_2" value="5" /></td></tr>
-            <tr><td class="q-text-cell">3. Định kiến giới tính có ảnh hưởng đến việc lựa chọn nhà cung cấp hoặc các quyết định quản trị.</td><td><input type="radio" name="pgi_3" value="1" required /></td><td><input type="radio" name="pgi_3" value="2" /></td><td><input type="radio" name="pgi_3" value="3" /></td><td><input type="radio" name="pgi_3" value="4" /></td><td><input type="radio" name="pgi_3" value="5" /></td></tr>
-            <tr><td class="q-text-cell">4. Phụ nữ có tầm ảnh hưởng hạn chế đối với các quyết định về chính sách của chuỗi cung ứng.</td><td><input type="radio" name="pgi_4" value="1" required /></td><td><input type="radio" name="pgi_4" value="2" /></td><td><input type="radio" name="pgi_4" value="3" /></td><td><input type="radio" name="pgi_4" value="4" /></td><td><input type="radio" name="pgi_4" value="5" /></td></tr>
-            <tr><td class="q-text-cell">5. Các vai trò lãnh đạo trong quản trị chuỗi cung ứng bị nam giới nắm giữ một cách không cân xứng (chiếm đa số áp đảo).</td><td><input type="radio" name="pgi_5" value="1" required /></td><td><input type="radio" name="pgi_5" value="2" /></td><td><input type="radio" name="pgi_5" value="3" /></td><td><input type="radio" name="pgi_5" value="4" /></td><td><input type="radio" name="pgi_5" value="5" /></td></tr>
-            <tr><td class="q-text-cell">6. Các chuyên gia nữ có ít cơ hội hơn trong việc gây ảnh hưởng đến quá trình lập kế hoạch chiến lược chuỗi cung ứng.</td><td><input type="radio" name="pgi_6" value="1" required /></td><td><input type="radio" name="pgi_6" value="2" /></td><td><input type="radio" name="pgi_6" value="3" /></td><td><input type="radio" name="pgi_6" value="4" /></td><td><input type="radio" name="pgi_6" value="5" /></td></tr>
-            <tr><td class="q-text-cell">7. Cơ cấu quản trị của tổ chức làm hạn chế sự tham gia của phụ nữ vào các cấp lãnh đạo chuỗi cung ứng.</td><td><input type="radio" name="pgi_7" value="1" required /></td><td><input type="radio" name="pgi_7" value="2" /></td><td><input type="radio" name="pgi_7" value="3" /></td><td><input type="radio" name="pgi_7" value="4" /></td><td><input type="radio" name="pgi_7" value="5" /></td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- ── SCPO ────────────────────────────────────────────── -->
-    <div class="section-card">
-      <div class="section-header">PHẦN V: THỰC THI VÀ KẾT QUẢ CHUỖI CUNG ỨNG (SCPO)</div>
-      <div class="section-desc">Đánh giá sự thực thi và kết quả chuỗi cung ứng tại công ty nơi đáp viên đang đi làm</div>
-      <div class="section-body">
-        <table class="likert-table">
-          <thead>
-            <tr>
-              <th class="q-col">Câu hỏi</th>
-              <th>Hoàn toàn không đồng ý</th><th>Không đồng ý</th><th>Trung lập</th><th>Đồng ý</th><th>Hoàn toàn đồng ý</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr><td class="q-text-cell">1. Bình đẳng giới giúp cải thiện sự phối hợp và cộng tác trong các nhóm chuỗi cung ứng.</td><td><input type="radio" name="scpo_1" value="1" required /></td><td><input type="radio" name="scpo_1" value="2" /></td><td><input type="radio" name="scpo_1" value="3" /></td><td><input type="radio" name="scpo_1" value="4" /></td><td><input type="radio" name="scpo_1" value="5" /></td></tr>
-            <tr><td class="q-text-cell">2. Các quy trình chuỗi cung ứng mang tính hòa nhập (không phân biệt) giúp nâng cao hiệu quả vận hành.</td><td><input type="radio" name="scpo_2" value="1" required /></td><td><input type="radio" name="scpo_2" value="2" /></td><td><input type="radio" name="scpo_2" value="3" /></td><td><input type="radio" name="scpo_2" value="4" /></td><td><input type="radio" name="scpo_2" value="5" /></td></tr>
-            <tr><td class="q-text-cell">3. Sự đa dạng về giới tính giúp cải thiện khả năng chống chịu (Resilience) của chuỗi cung ứng.</td><td><input type="radio" name="scpo_3" value="1" required /></td><td><input type="radio" name="scpo_3" value="2" /></td><td><input type="radio" name="scpo_3" value="3" /></td><td><input type="radio" name="scpo_3" value="4" /></td><td><input type="radio" name="scpo_3" value="5" /></td></tr>
-            <tr><td class="q-text-cell">4. Cơ hội bình đẳng giúp nâng cao năng suất trong các hoạt động của chuỗi cung ứng.</td><td><input type="radio" name="scpo_4" value="1" required /></td><td><input type="radio" name="scpo_4" value="2" /></td><td><input type="radio" name="scpo_4" value="3" /></td><td><input type="radio" name="scpo_4" value="4" /></td><td><input type="radio" name="scpo_4" value="5" /></td></tr>
-            <tr><td class="q-text-cell">5. Sự đa dạng giới tính giúp cải thiện khả năng giải quyết vấn đề trong các hoạt động chuỗi cung ứng.</td><td><input type="radio" name="scpo_5" value="1" required /></td><td><input type="radio" name="scpo_5" value="2" /></td><td><input type="radio" name="scpo_5" value="3" /></td><td><input type="radio" name="scpo_5" value="4" /></td><td><input type="radio" name="scpo_5" value="5" /></td></tr>
-            <tr><td class="q-text-cell">6. Môi trường làm việc hòa nhập giúp tăng cường sự phối hợp giữa các đối tác trong chuỗi cung ứng.</td><td><input type="radio" name="scpo_6" value="1" required /></td><td><input type="radio" name="scpo_6" value="2" /></td><td><input type="radio" name="scpo_6" value="3" /></td><td><input type="radio" name="scpo_6" value="4" /></td><td><input type="radio" name="scpo_6" value="5" /></td></tr>
-            <tr><td class="q-text-cell">7. Các tổ chức có đội ngũ cân bằng về giới tính cho thấy khả năng thích ứng chuỗi cung ứng mạnh mẽ hơn.</td><td><input type="radio" name="scpo_7" value="1" required /></td><td><input type="radio" name="scpo_7" value="2" /></td><td><input type="radio" name="scpo_7" value="3" /></td><td><input type="radio" name="scpo_7" value="4" /></td><td><input type="radio" name="scpo_7" value="5" /></td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- ── SESI ────────────────────────────────────────────── -->
-    <div class="section-card">
-      <div class="section-header">PHẦN VI: TÁC ĐỘNG KINH TẾ - XÃ HỘI VÀ SỰ BỀN VỮNG (SESI)</div>
-      <div class="section-desc">Đánh giá tác động kinh tế - xã hội và sự bền vững tại công ty nơi đáp viên đang đi làm</div>
-      <div class="section-body">
-        <table class="likert-table">
-          <thead>
-            <tr>
-              <th class="q-col">Câu hỏi</th>
-              <th>Hoàn toàn không đồng ý</th><th>Không đồng ý</th><th>Trung lập</th><th>Đồng ý</th><th>Hoàn toàn đồng ý</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr><td class="q-text-cell">1. Bình đẳng giới giúp cải thiện phúc lợi của nhân viên trong các tổ chức chuỗi cung ứng.</td><td><input type="radio" name="sesi_1" value="1" required /></td><td><input type="radio" name="sesi_1" value="2" /></td><td><input type="radio" name="sesi_1" value="3" /></td><td><input type="radio" name="sesi_1" value="4" /></td><td><input type="radio" name="sesi_1" value="5" /></td></tr>
-            <tr><td class="q-text-cell">2. Chuỗi cung ứng hòa nhập (không phân biệt đối xử) đóng góp vào sự bền vững về mặt xã hội.</td><td><input type="radio" name="sesi_2" value="1" required /></td><td><input type="radio" name="sesi_2" value="2" /></td><td><input type="radio" name="sesi_2" value="3" /></td><td><input type="radio" name="sesi_2" value="4" /></td><td><input type="radio" name="sesi_2" value="5" /></td></tr>
-            <tr><td class="q-text-cell">3. Bình đẳng giới giúp củng cố hiệu quả kinh tế trong dài hạn của doanh nghiệp.</td><td><input type="radio" name="sesi_3" value="1" required /></td><td><input type="radio" name="sesi_3" value="2" /></td><td><input type="radio" name="sesi_3" value="3" /></td><td><input type="radio" name="sesi_3" value="4" /></td><td><input type="radio" name="sesi_3" value="5" /></td></tr>
-            <tr><td class="q-text-cell">4. Bình đẳng giới góp phần tạo ra các cơ hội kinh tế công bằng hơn trong các ngành công nghiệp chuỗi cung ứng.</td><td><input type="radio" name="sesi_4" value="1" required /></td><td><input type="radio" name="sesi_4" value="2" /></td><td><input type="radio" name="sesi_4" value="3" /></td><td><input type="radio" name="sesi_4" value="4" /></td><td><input type="radio" name="sesi_4" value="5" /></td></tr>
-            <tr><td class="q-text-cell">5. Các chuỗi cung ứng hòa nhập giúp tăng cường phát triển cộng đồng và ổn định xã hội.</td><td><input type="radio" name="sesi_5" value="1" required /></td><td><input type="radio" name="sesi_5" value="2" /></td><td><input type="radio" name="sesi_5" value="3" /></td><td><input type="radio" name="sesi_5" value="4" /></td><td><input type="radio" name="sesi_5" value="5" /></td></tr>
-            <tr><td class="q-text-cell">6. Các chính sách hòa nhập giới giúp cải thiện tính bền vững dài hạn của toàn bộ hệ sinh thái chuỗi cung ứng.</td><td><input type="radio" name="sesi_6" value="1" required /></td><td><input type="radio" name="sesi_6" value="2" /></td><td><input type="radio" name="sesi_6" value="3" /></td><td><input type="radio" name="sesi_6" value="4" /></td><td><input type="radio" name="sesi_6" value="5" /></td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- ── HCSC ────────────────────────────────────────────── -->
-    <div class="section-card">
-      <div class="section-header">PHẦN VII: VĂN HÓA CHUỖI CUNG ỨNG LẤY CON NGƯỜI LÀM TRUNG TÂM (HCSC)</div>
-      <div class="section-desc">Đánh giá văn hóa chuỗi cung ứng lấy con người làm trung tâm tại công ty nơi đáp viên đang đi làm</div>
-      <div class="section-body">
-        <table class="likert-table">
-          <thead>
-            <tr>
-              <th class="q-col">Câu hỏi</th>
-              <th>Hoàn toàn không đồng ý</th><th>Không đồng ý</th><th>Trung lập</th><th>Đồng ý</th><th>Hoàn toàn đồng ý</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr><td class="q-text-cell">1. Tổ chức của chúng tôi ưu tiên phúc lợi của nhân viên trong các hoạt động chuỗi cung ứng.</td><td><input type="radio" name="hcsc_1" value="1" required /></td><td><input type="radio" name="hcsc_1" value="2" /></td><td><input type="radio" name="hcsc_1" value="3" /></td><td><input type="radio" name="hcsc_1" value="4" /></td><td><input type="radio" name="hcsc_1" value="5" /></td></tr>
-            <tr><td class="q-text-cell">2. Các quyết định về chuỗi cung ứng có cân nhắc đến các tác động về con người và xã hội.</td><td><input type="radio" name="hcsc_2" value="1" required /></td><td><input type="radio" name="hcsc_2" value="2" /></td><td><input type="radio" name="hcsc_2" value="3" /></td><td><input type="radio" name="hcsc_2" value="4" /></td><td><input type="radio" name="hcsc_2" value="5" /></td></tr>
-            <tr><td class="q-text-cell">3. Ban lãnh đạo khuyến khích sự tham gia hòa nhập của mọi người vào quá trình ra quyết định.</td><td><input type="radio" name="hcsc_3" value="1" required /></td><td><input type="radio" name="hcsc_3" value="2" /></td><td><input type="radio" name="hcsc_3" value="3" /></td><td><input type="radio" name="hcsc_3" value="4" /></td><td><input type="radio" name="hcsc_3" value="5" /></td></tr>
-            <tr><td class="q-text-cell">4. Quản trị lấy con người làm trung tâm giúp cải thiện sự bình đẳng tại nơi làm việc.</td><td><input type="radio" name="hcsc_4" value="1" required /></td><td><input type="radio" name="hcsc_4" value="2" /></td><td><input type="radio" name="hcsc_4" value="3" /></td><td><input type="radio" name="hcsc_4" value="4" /></td><td><input type="radio" name="hcsc_4" value="5" /></td></tr>
-            <tr><td class="q-text-cell">5. Tổ chức của chúng tôi thúc đẩy sự công bằng và bình đẳng trong quản trị nhân sự chuỗi cung ứng.</td><td><input type="radio" name="hcsc_5" value="1" required /></td><td><input type="radio" name="hcsc_5" value="2" /></td><td><input type="radio" name="hcsc_5" value="3" /></td><td><input type="radio" name="hcsc_5" value="4" /></td><td><input type="radio" name="hcsc_5" value="5" /></td></tr>
-            <tr><td class="q-text-cell">6. Phúc lợi của nhân viên được coi là một mục tiêu quan trọng trong các chiến lược chuỗi cung ứng.</td><td><input type="radio" name="hcsc_6" value="1" required /></td><td><input type="radio" name="hcsc_6" value="2" /></td><td><input type="radio" name="hcsc_6" value="3" /></td><td><input type="radio" name="hcsc_6" value="4" /></td><td><input type="radio" name="hcsc_6" value="5" /></td></tr>
-            <tr><td class="q-text-cell">7. Các nhà lãnh đạo chuỗi cung ứng tích cực ủng hộ các sáng kiến về đa dạng và hòa nhập.</td><td><input type="radio" name="hcsc_7" value="1" required /></td><td><input type="radio" name="hcsc_7" value="2" /></td><td><input type="radio" name="hcsc_7" value="3" /></td><td><input type="radio" name="hcsc_7" value="4" /></td><td><input type="radio" name="hcsc_7" value="5" /></td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- ── GAI ─────────────────────────────────────────────── -->
-    <div class="section-card">
-      <div class="section-header">PHẦN VIII: HỖ TRỢ RA QUYẾT ĐỊNH BẰNG GENERATIVE AI (GAI)</div>
-      <div class="section-desc">Đánh giá sự hỗ trợ ra quyết định bằng Generative AI tại công ty nơi đáp viên đang đi làm</div>
-      <div class="section-body">
-        <table class="likert-table">
-          <thead>
-            <tr>
-              <th class="q-col">Câu hỏi</th>
-              <th>Hoàn toàn không đồng ý</th><th>Không đồng ý</th><th>Trung lập</th><th>Đồng ý</th><th>Hoàn toàn đồng ý</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr><td class="q-text-cell">1. Các công cụ AI tạo sinh (Generative AI) được sử dụng để hỗ trợ ra quyết định trong chuỗi cung ứng.</td><td><input type="radio" name="gai_1" value="1" required /></td><td><input type="radio" name="gai_1" value="2" /></td><td><input type="radio" name="gai_1" value="3" /></td><td><input type="radio" name="gai_1" value="4" /></td><td><input type="radio" name="gai_1" value="5" /></td></tr>
-            <tr><td class="q-text-cell">2. Các hệ thống dựa trên AI giúp giảm bớt định kiến trong việc đánh giá hiệu suất chuỗi cung ứng.</td><td><input type="radio" name="gai_2" value="1" required /></td><td><input type="radio" name="gai_2" value="2" /></td><td><input type="radio" name="gai_2" value="3" /></td><td><input type="radio" name="gai_2" value="4" /></td><td><input type="radio" name="gai_2" value="5" /></td></tr>
-            <tr><td class="q-text-cell">3. Phân tích được AI hỗ trợ giúp cải thiện sự công bằng trong quản trị nhân sự.</td><td><input type="radio" name="gai_3" value="1" required /></td><td><input type="radio" name="gai_3" value="2" /></td><td><input type="radio" name="gai_3" value="3" /></td><td><input type="radio" name="gai_3" value="4" /></td><td><input type="radio" name="gai_3" value="5" /></td></tr>
-            <tr><td class="q-text-cell">4. Các công cụ AI giúp tăng tính minh bạch trong quản trị chuỗi cung ứng.</td><td><input type="radio" name="gai_4" value="1" required /></td><td><input type="radio" name="gai_4" value="2" /></td><td><input type="radio" name="gai_4" value="3" /></td><td><input type="radio" name="gai_4" value="4" /></td><td><input type="radio" name="gai_4" value="5" /></td></tr>
-            <tr><td class="q-text-cell">5. Những thông tin chi tiết (insights) do AI tạo ra giúp các nhà quản trị đưa ra quyết định chuỗi cung ứng khách quan hơn.</td><td><input type="radio" name="gai_5" value="1" required /></td><td><input type="radio" name="gai_5" value="2" /></td><td><input type="radio" name="gai_5" value="3" /></td><td><input type="radio" name="gai_5" value="4" /></td><td><input type="radio" name="gai_5" value="5" /></td></tr>
-            <tr><td class="q-text-cell">6. Các công cụ GenAI giúp nhận diện những định kiến ngầm trong thực hành quản trị chuỗi cung ứng.</td><td><input type="radio" name="gai_6" value="1" required /></td><td><input type="radio" name="gai_6" value="2" /></td><td><input type="radio" name="gai_6" value="3" /></td><td><input type="radio" name="gai_6" value="4" /></td><td><input type="radio" name="gai_6" value="5" /></td></tr>
-            <tr><td class="q-text-cell">7. Các hệ thống ra quyết định được AI hỗ trợ giúp tăng cường tính minh bạch trong các quy trình của tổ chức.</td><td><input type="radio" name="gai_7" value="1" required /></td><td><input type="radio" name="gai_7" value="2" /></td><td><input type="radio" name="gai_7" value="3" /></td><td><input type="radio" name="gai_7" value="4" /></td><td><input type="radio" name="gai_7" value="5" /></td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- ── AAI ─────────────────────────────────────────────── -->
-    <div class="section-card">
-      <div class="section-header">PHẦN IX: QUẢN TRỊ BẰNG CHUỖI AI HÀNH ĐỘNG (AGENTIC AI – AAI)</div>
-      <div class="section-desc">Đánh giá sự quản trị bằng chuỗi AI hành động (Agentic AI) tại công ty nơi đáp viên đang đi làm</div>
-      <div class="section-body">
-        <table class="likert-table">
-          <thead>
-            <tr>
-              <th class="q-col">Câu hỏi</th>
-              <th>Hoàn toàn không đồng ý</th><th>Không đồng ý</th><th>Trung lập</th><th>Đồng ý</th><th>Hoàn toàn đồng ý</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr><td class="q-text-cell">1. Các chuỗi AI hành động (AI agents) hỗ trợ các quyết định vận hành chuỗi cung ứng.</td><td><input type="radio" name="aai_1" value="1" required /></td><td><input type="radio" name="aai_1" value="2" /></td><td><input type="radio" name="aai_1" value="3" /></td><td><input type="radio" name="aai_1" value="4" /></td><td><input type="radio" name="aai_1" value="5" /></td></tr>
-            <tr><td class="q-text-cell">2. Các chuỗi AI hành động hỗ trợ giám sát sự công bằng trong các quy trình chuỗi cung ứng.</td><td><input type="radio" name="aai_2" value="1" required /></td><td><input type="radio" name="aai_2" value="2" /></td><td><input type="radio" name="aai_2" value="3" /></td><td><input type="radio" name="aai_2" value="4" /></td><td><input type="radio" name="aai_2" value="5" /></td></tr>
-            <tr><td class="q-text-cell">3. Tự động hóa dựa trên AI giúp cải thiện tính minh bạch trong quản trị nhà cung cấp.</td><td><input type="radio" name="aai_3" value="1" required /></td><td><input type="radio" name="aai_3" value="2" /></td><td><input type="radio" name="aai_3" value="3" /></td><td><input type="radio" name="aai_3" value="4" /></td><td><input type="radio" name="aai_3" value="5" /></td></tr>
-            <tr><td class="q-text-cell">4. Các chuỗi AI hành động tự chủ giúp đảm bảo tính công bằng trong các quyết định vận hành chuỗi cung ứng.</td><td><input type="radio" name="aai_4" value="1" required /></td><td><input type="radio" name="aai_4" value="2" /></td><td><input type="radio" name="aai_4" value="3" /></td><td><input type="radio" name="aai_4" value="4" /></td><td><input type="radio" name="aai_4" value="5" /></td></tr>
-            <tr><td class="q-text-cell">5. Các chuỗi AI hành động hỗ trợ tổ chức trong việc giám sát sự bình đẳng và tuân thủ trong chuỗi cung ứng.</td><td><input type="radio" name="aai_5" value="1" required /></td><td><input type="radio" name="aai_5" value="2" /></td><td><input type="radio" name="aai_5" value="3" /></td><td><input type="radio" name="aai_5" value="4" /></td><td><input type="radio" name="aai_5" value="5" /></td></tr>
-            <tr><td class="q-text-cell">6. Tự động hóa do chuỗi AI hành động thúc đẩy giúp nâng cao trách nhiệm giải trình trong các quy trình quản trị nhà cung cấp.</td><td><input type="radio" name="aai_6" value="1" required /></td><td><input type="radio" name="aai_6" value="2" /></td><td><input type="radio" name="aai_6" value="3" /></td><td><input type="radio" name="aai_6" value="4" /></td><td><input type="radio" name="aai_6" value="5" /></td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- ── ESG ─────────────────────────────────────────────── -->
-    <div class="section-card">
-      <div class="section-header">PHẦN X: CHÍNH SÁCH CHUỖI CUNG ỨNG DỰA TRÊN ESG</div>
-      <div class="section-desc">Đánh giá chính sách chuỗi cung ứng dựa trên ESG tại công ty nơi đáp viên đang đi làm</div>
-      <div class="section-body">
-        <table class="likert-table">
-          <thead>
-            <tr>
-              <th class="q-col">Câu hỏi</th>
-              <th>Hoàn toàn không đồng ý</th><th>Không đồng ý</th><th>Trung lập</th><th>Đồng ý</th><th>Hoàn toàn đồng ý</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr><td class="q-text-cell">1. Tổ chức của chúng tôi tích hợp bình đẳng giới vào các chiến lược ESG.</td><td><input type="radio" name="esg_1" value="1" required /></td><td><input type="radio" name="esg_1" value="2" /></td><td><input type="radio" name="esg_1" value="3" /></td><td><input type="radio" name="esg_1" value="4" /></td><td><input type="radio" name="esg_1" value="5" /></td></tr>
-            <tr><td class="q-text-cell">2. Việc lựa chọn nhà cung cấp có cân nhắc đến các tiêu chí về bình đẳng xã hội.</td><td><input type="radio" name="esg_2" value="1" required /></td><td><input type="radio" name="esg_2" value="2" /></td><td><input type="radio" name="esg_2" value="3" /></td><td><input type="radio" name="esg_2" value="4" /></td><td><input type="radio" name="esg_2" value="5" /></td></tr>
-            <tr><td class="q-text-cell">3. Các chính sách ESG khuyến khích sự đa dạng giới trong hàng ngũ lãnh đạo chuỗi cung ứng.</td><td><input type="radio" name="esg_3" value="1" required /></td><td><input type="radio" name="esg_3" value="2" /></td><td><input type="radio" name="esg_3" value="3" /></td><td><input type="radio" name="esg_3" value="4" /></td><td><input type="radio" name="esg_3" value="5" /></td></tr>
-            <tr><td class="q-text-cell">4. Báo cáo ESG giúp tăng trách nhiệm giải trình đối với bình đẳng tại nơi làm việc.</td><td><input type="radio" name="esg_4" value="1" required /></td><td><input type="radio" name="esg_4" value="2" /></td><td><input type="radio" name="esg_4" value="3" /></td><td><input type="radio" name="esg_4" value="4" /></td><td><input type="radio" name="esg_4" value="5" /></td></tr>
-            <tr><td class="q-text-cell">5. Các khung quản trị ESG thúc đẩy bình đẳng giới xuyên suốt các đối tác trong chuỗi cung ứng.</td><td><input type="radio" name="esg_5" value="1" required /></td><td><input type="radio" name="esg_5" value="2" /></td><td><input type="radio" name="esg_5" value="3" /></td><td><input type="radio" name="esg_5" value="4" /></td><td><input type="radio" name="esg_5" value="5" /></td></tr>
-            <tr><td class="q-text-cell">6. Tổ chức của chúng tôi thường xuyên đánh giá các chỉ số bình đẳng giới trong báo cáo ESG.</td><td><input type="radio" name="esg_6" value="1" required /></td><td><input type="radio" name="esg_6" value="2" /></td><td><input type="radio" name="esg_6" value="3" /></td><td><input type="radio" name="esg_6" value="4" /></td><td><input type="radio" name="esg_6" value="5" /></td></tr>
-            <tr><td class="q-text-cell">7. Quản trị dựa trên ESG giúp cải thiện tính minh bạch trong quản trị sự đa dạng của đội ngũ nhân sự.</td><td><input type="radio" name="esg_7" value="1" required /></td><td><input type="radio" name="esg_7" value="2" /></td><td><input type="radio" name="esg_7" value="3" /></td><td><input type="radio" name="esg_7" value="4" /></td><td><input type="radio" name="esg_7" value="5" /></td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- ── Submit ──────────────────────────────────────────── -->
-    <div class="submit-section">
-      <p class="submit-note">Vui lòng kiểm tra lại các câu trả lời trước khi gửi. Sau khi gửi, bạn sẽ không thể chỉnh sửa.</p>
-      <button type="submit" id="submit-btn">GỬI BẢNG CÂU HỎI</button>
-    </div>
-
-  </form>
-
-  <!-- Success page (shown after Formspree redirects back) -->
-  <div class="success-page" id="success-page">
-    <h2>Cảm ơn Quý Ông/Bà!</h2>
-    <p>Phản hồi của bạn đã được ghi nhận thành công.<br/>Chúng tôi xin chân thành cảm ơn sự tham gia và đóng góp của bạn.</p>
-  </div>
-
-</div><!-- /container -->
+<!-- Toast -->
+<div class="toast" id="toast"></div>
 
 <script>
-  // ── Timestamp ──────────────────────────────────────────────
-  document.getElementById('field-timestamp').value = new Date().toISOString();
+// ============================================================
+// SURVEY DATA — 10 GROUPS, 80 QUESTIONS, LIKERT 7-POINT
+// ============================================================
+const SURVEY_SECTIONS = [
+    {
+        code: 'A', construct: 'SME', varPrefix: 'sme',
+        title: 'NHÓM A. SYNTHETIC MEDIA EXPOSURE (SME)',
+        subtitle: 'Tiếp xúc với Phương tiện Truyền thông Tổng hợp',
+        questions: [
+            'Trong công việc, tôi ngày càng gặp nhiều thông tin trực tuyến khó xác định tính xác thực.',
+            'Tôi nhận thấy các hình thức giao tiếp số hiện nay ngày càng giống thật và khó phân biệt hơn.',
+            'Tôi cho rằng các nội dung do AI tạo ra đang xuất hiện ngày càng nhiều trong môi trường làm việc.',
+            'Tôi từng gặp những tình huống không chắc thông tin trực tuyến có thực sự đáng tin hay không.',
+            'Tôi thấy việc phân biệt giữa thông tin thật và thông tin bị chỉnh sửa ngày càng khó khăn.',
+            'Tôi nhận thấy các email hoặc tin nhắn trực tuyến hiện nay ngày càng tinh vi và khó nhận biết.',
+            'Tôi thường xuyên tiếp xúc với các nội dung khiến tôi phải cân nhắc kỹ trước khi tin tưởng.',
+            'Tôi cho rằng môi trường giao tiếp số hiện nay tiềm ẩn nhiều nguy cơ giả mạo hơn trước đây.',
+        ]
+    },
+    {
+        code: 'B', construct: 'ECE', varPrefix: 'ece',
+        title: 'NHÓM B. EPISTEMIC CYBERSECURITY EDUCATION (ECE)',
+        subtitle: 'Giáo dục An ninh Mạng theo hướng Nhận thức Luận',
+        questions: [
+            'Doanh nghiệp thường xuyên hướng dẫn tôi cách nhận biết các rủi ro trong giao tiếp số.',
+            'Tôi được hướng dẫn cách xác minh thông tin trước khi phản hồi các yêu cầu trực tuyến.',
+            'Các hoạt động đào tạo tại doanh nghiệp giúp tôi hiểu rõ hơn về giả mạo bằng AI.',
+            'Doanh nghiệp khuyến khích kiểm tra kỹ thông tin trước khi quyết định trong môi trường số.',
+            'Tôi được hướng dẫn cách xử lý các tình huống giao tiếp số đáng ngờ trong công việc.',
+            'Doanh nghiệp thường xuyên cập nhật cho nhân viên về các hình thức lừa đảo mới.',
+            'Các chương trình đào tạo giúp tôi tự tin hơn khi xử lý thông tin trực tuyến đáng ngờ.',
+            'Doanh nghiệp tạo điều kiện để nhân viên nâng cao kỹ năng xác minh thông tin số.',
+        ]
+    },
+    {
+        code: 'C', construct: 'OVC', varPrefix: 'ovc',
+        title: 'NHÓM C. ORGANIZATIONAL VERIFICATION CLIMATE (OVC)',
+        subtitle: 'Văn hóa Xác minh Thông tin trong Tổ chức',
+        questions: [
+            'Doanh nghiệp khuyến khích xác minh thông tin trước khi thực hiện các yêu cầu quan trọng.',
+            'Nhân viên được khuyến khích đặt câu hỏi khi cảm thấy thông tin số có dấu hiệu bất thường.',
+            'Trong doanh nghiệp tôi, việc kiểm tra lại thông tin được xem là cần thiết và tích cực.',
+            'Tôi thấy thoải mái khi xác minh lại yêu cầu từ cấp trên hoặc đồng nghiệp.',
+            'Doanh nghiệp không tạo áp lực khiến nhân viên phải phản hồi ngay mà không kiểm tra.',
+            'Việc xác minh thông tin từ nhiều nguồn được khuyến khích trong môi trường làm việc của tôi.',
+            'Tôi nhận thấy doanh nghiệp ưu tiên tính chính xác của thông tin hơn tốc độ phản hồi.',
+            'Nhân viên không bị đánh giá tiêu cực khi kiểm tra lại các thông tin đáng ngờ.',
+        ]
+    },
+    {
+        code: 'D', construct: 'EV', varPrefix: 'ev',
+        title: 'NHÓM D. EPISTEMIC VIGILANCE (EV)',
+        subtitle: 'Cảnh giác Nhận thức Luận',
+        questions: [
+            'Tôi thường kiểm tra kỹ thông tin trực tuyến trước khi phản hồi hoặc thực hiện yêu cầu.',
+            'Tôi có xu hướng đánh giá mức độ đáng tin của thông tin trước khi hành động.',
+            'Tôi thường chú ý đến các dấu hiệu bất thường trong email hoặc tin nhắn công việc.',
+            'Tôi hiếm khi tin ngay vào các yêu cầu trực tuyến mà chưa kiểm tra.',
+            'Tôi thường cân nhắc tính xác thực của thông tin trước khi chia sẻ với người khác.',
+            'Tôi có xu hướng xác minh lại các thông tin quan trọng trong công việc.',
+            'Tôi cẩn trọng hơn khi xử lý các yêu cầu trực tuyến có tính khẩn cấp.',
+            'Tôi thường suy nghĩ kỹ trước khi tin vào các thông tin số trong công việc.',
+        ]
+    },
+    {
+        code: 'E', construct: 'AVC', varPrefix: 'avc',
+        title: 'NHÓM E. ADAPTIVE VERIFICATION CAPABILITY (AVC)',
+        subtitle: 'Năng lực Xác minh Thích ứng',
+        questions: [
+            'Tôi biết cách kiểm tra tính xác thực của các yêu cầu trực tuyến quan trọng.',
+            'Tôi có khả năng xác minh thông tin từ nhiều nguồn khác nhau khi cần thiết.',
+            'Tôi biết cách xử lý các tình huống giao tiếp số đáng ngờ.',
+            'Tôi có thể nhận biết các dấu hiệu bất thường trong email hoặc tin nhắn công việc.',
+            'Tôi tự tin vào khả năng đánh giá mức độ đáng tin của thông tin trực tuyến.',
+            'Tôi biết khi nào cần xác minh thêm trước khi đưa ra quyết định.',
+            'Tôi có thể sử dụng nhiều phương thức khác nhau để kiểm tra thông tin.',
+            'Tôi cảm thấy mình có đủ kỹ năng để xử lý các rủi ro trong giao tiếp số.',
+        ]
+    },
+    {
+        code: 'F', construct: 'DTC', varPrefix: 'dtc',
+        title: 'NHÓM F. DIGITAL TRUST CALIBRATION (DTC)',
+        subtitle: 'Hiệu chỉnh Niềm tin Số',
+        questions: [
+            'Tôi biết khi nào nên tin tưởng và khi nào nên kiểm tra thêm thông tin trực tuyến.',
+            'Tôi không dễ dàng tin hoàn toàn vào mọi thông tin số mình nhận được.',
+            'Tôi cố gắng giữ sự cân bằng giữa tin tưởng và cẩn trọng trong giao tiếp số.',
+            'Tôi không nghi ngờ quá mức đối với mọi thông tin trực tuyến.',
+            'Tôi có thể đánh giá mức độ rủi ro của từng tình huống giao tiếp số khác nhau.',
+            'Tôi điều chỉnh mức độ kiểm tra thông tin tùy theo mức độ quan trọng của tình huống.',
+            'Tôi có thể duy trì sự cẩn trọng mà không làm gián đoạn công việc.',
+            'Tôi biết cách xử lý thông tin trực tuyến hợp lý thay vì quá tin tưởng hoặc quá nghi ngờ.',
+        ]
+    },
+    {
+        code: 'G', construct: 'EA', varPrefix: 'ea',
+        title: 'NHÓM G. EPISTEMIC ANXIETY (EA)',
+        subtitle: 'Lo âu Nhận thức về Tính xác thực của Thông tin',
+        questions: [
+            'Tôi lo ngại rằng mình có thể không nhận ra các nội dung giả mạo do AI tạo ra.',
+            'Tôi cảm thấy khó chắc chắn rằng các thông tin trực tuyến mình nhận được là xác thực.',
+            'Tôi cảm thấy căng thẳng khi phải đánh giá liệu một yêu cầu trực tuyến có đáng tin hay không.',
+            'Tôi lo sợ mình có thể phản hồi sai trước các thông tin giả mạo.',
+            'Tôi cảm thấy môi trường giao tiếp số hiện nay ngày càng khó dự đoán.',
+            'Tôi đôi khi mất tự tin vào khả năng đánh giá thông tin trực tuyến của bản thân.',
+            'Tôi cảm thấy áp lực khi phải liên tục xác minh các thông tin số trong công việc.',
+            'Tôi cảm thấy bất an trước sự phát triển của các hình thức giả mạo bằng AI.',
+        ]
+    },
+    {
+        code: 'H', construct: 'VF', varPrefix: 'vf',
+        title: 'NHÓM H. VERIFICATION FATIGUE (VF)',
+        subtitle: 'Mệt mỏi vì Xác minh Thông tin',
+        questions: [
+            'Tôi cảm thấy mệt mỏi vì phải thường xuyên kiểm tra lại thông tin trực tuyến.',
+            'Việc liên tục xác minh thông tin khiến tôi mất nhiều năng lượng tinh thần.',
+            'Tôi cảm thấy quá tải khi phải đánh giá tính xác thực của quá nhiều thông tin số.',
+            'Tôi cảm thấy việc kiểm tra thông tin liên tục làm giảm hiệu quả công việc.',
+            'Tôi đôi khi cảm thấy kiệt sức vì phải luôn cảnh giác với các rủi ro trực tuyến.',
+            'Tôi cảm thấy áp lực khi phải liên tục cân nhắc liệu thông tin có đáng tin hay không.',
+            'Tôi cảm thấy việc xác minh thông tin trong môi trường số ngày càng tốn nhiều công sức.',
+            'Tôi đôi khi muốn phản hồi nhanh thay vì tiếp tục kiểm tra thông tin.',
+        ]
+    },
+    {
+        code: 'I', construct: 'OCR', varPrefix: 'ocr',
+        title: 'NHÓM I. ORGANIZATIONAL CYBERSECURITY RESILIENCE (OCR)',
+        subtitle: 'Khả năng Phục hồi An ninh Mạng của Tổ chức',
+        questions: [
+            'Doanh nghiệp của tôi có khả năng phản ứng hiệu quả trước các rủi ro an ninh mạng.',
+            'Nhân viên có khả năng phối hợp tốt khi xuất hiện các tình huống đáng ngờ.',
+            'Doanh nghiệp có thể nhanh chóng thích nghi với các hình thức rủi ro số mới.',
+            'Tôi cho rằng doanh nghiệp của mình xử lý tốt các vấn đề liên quan đến giao tiếp số đáng ngờ.',
+            'Doanh nghiệp của tôi có khả năng duy trì hoạt động ổn định trước các rủi ro trực tuyến.',
+            'Nhân viên hiểu rõ cách phản ứng trước các tình huống giả mạo hoặc lừa đảo.',
+            'Tôi tin rằng doanh nghiệp có đủ năng lực đối phó với các hình thức giả mạo bằng AI.',
+            'Doanh nghiệp của tôi chú trọng xây dựng môi trường làm việc số an toàn và thích nghi.',
+        ]
+    },
+    {
+        code: 'J', construct: 'CD', varPrefix: 'cd',
+        title: 'NHÓM J. COMMUNICATION DYSFUNCTION (CD)',
+        subtitle: 'Rối loạn Giao tiếp trong Tổ chức',
+        questions: [
+            'Việc phải xác minh nhiều thông tin khiến quá trình xử lý công việc trở nên chậm hơn.',
+            'Tôi nhận thấy nhân viên ngày càng thận trọng quá mức trong giao tiếp trực tuyến.',
+            'Sự nghi ngờ đối với thông tin số đôi khi làm giảm hiệu quả phối hợp công việc.',
+            'Tôi cảm thấy việc giao tiếp trực tuyến hiện nay mất nhiều thời gian xác minh hơn trước.',
+            'Một số quyết định công việc bị trì hoãn do cần kiểm tra lại thông tin.',
+            'Tôi nhận thấy nhân viên đôi khi do dự khi phản hồi các yêu cầu trực tuyến.',
+            'Việc lo ngại thông tin giả mạo làm giảm sự linh hoạt trong giao tiếp công việc.',
+            'Môi trường giao tiếp số đôi khi khiến việc phối hợp công việc trở nên khó khăn hơn.',
+        ]
+    },
+];
 
-  // ── Toggle "other" text input ──────────────────────────────
-  function toggleOther(radio, inputId) {
-    const inp = document.getElementById(inputId);
-    if (radio.checked) {
-      inp.style.display = 'block';
-      inp.required = true;
-    }
-  }
-  // Hide "other" when a different radio in same group is chosen
-  document.querySelectorAll('input[name="q_info_3"]').forEach(r => {
-    r.addEventListener('change', function () {
-      const inp = document.getElementById('other_q3');
-      if (this.value !== '8') {
-        inp.style.display = 'none';
-        inp.required = false;
-        inp.value = '';
-      }
+const LIKERT_LABELS = ['1', '2', '3', '4', '5', '6', '7'];
+
+// ---- Render likert sections ----
+function renderSections() {
+    const container = document.getElementById('likert-sections');
+    let qNum = 8; // continues from demographics (7 demo Qs shown as 1-7)
+    SURVEY_SECTIONS.forEach(sec => {
+        const sectionEl = document.createElement('div');
+        sectionEl.className = 'section';
+        sectionEl.innerHTML = `
+            <div class="section-header">
+                ${sec.title}
+                <small>${sec.subtitle}</small>
+            </div>
+            <div class="section-body">
+                <div class="section-instruction">
+                    Vui lòng đánh giá mức độ đồng ý của Anh/Chị với các phát biểu sau theo thang 1 (Hoàn toàn không đồng ý) đến 7 (Hoàn toàn đồng ý).
+                </div>
+                ${sec.questions.map((q, i) => {
+                    qNum++;
+                    const varName = `${sec.varPrefix}_${i + 1}`;
+                    return `
+                    <div class="question-block" id="block_${varName}">
+                        <div class="question-label">
+                            <span class="q-num">${qNum}</span>
+                            <span>${q}</span>
+                        </div>
+                        <div class="likert-wrap">
+                            <div class="likert-row">
+                                <span class="lk-end left">Hoàn toàn<br>không đồng ý</span>
+                                <div class="likert-options">
+                                    ${LIKERT_LABELS.map(v => `
+                                    <label>
+                                        <input type="radio" name="${varName}" value="${v}">
+                                        <span>${v}</span>
+                                    </label>`).join('')}
+                                </div>
+                                <span class="lk-end right">Hoàn toàn<br>đồng ý</span>
+                            </div>
+                        </div>
+                    </div>`;
+                }).join('')}
+            </div>`;
+        container.appendChild(sectionEl);
     });
-  });
+}
 
-  // ── Progress bar ───────────────────────────────────────────
-  const requiredNames = new Set(
-    Array.from(document.querySelectorAll('input[required]')).map(i => i.name)
-  );
-  const total = requiredNames.size;
-
-  function updateProgress() {
+// ---- Progress ----
+function updateProgress() {
+    const inputs = document.querySelectorAll('#surveyForm input[type="radio"]');
+    const names = new Set([...inputs].map(i => i.name));
     let answered = 0;
-    requiredNames.forEach(name => {
-      if (document.querySelector(`input[name="${name}"]:checked`)) answered++;
+    names.forEach(n => {
+        if (document.querySelector(`input[name="${n}"]:checked`)) answered++;
     });
-    const pct = Math.round((answered / total) * 100);
-    document.getElementById('progress-bar-fill').style.width = pct + '%';
-    document.getElementById('pct').textContent = pct;
-  }
-  document.addEventListener('change', updateProgress);
-  updateProgress();
+    const pct = Math.round((answered / names.size) * 100);
+    document.getElementById('progress-fill').style.width = pct + '%';
+    document.getElementById('progress-text').innerText = pct + '%';
+}
 
-  // ── Validation before submit ───────────────────────────────
-  document.getElementById('survey-form').addEventListener('submit', function (e) {
-    const missing = [];
-    requiredNames.forEach(name => {
-      if (!document.querySelector(`input[name="${name}"]:checked`)) {
-        missing.push(name);
-      }
+// ---- Validation ----
+function validateForm() {
+    const names = new Set([...document.querySelectorAll('#surveyForm input[type="radio"]')].map(i => i.name));
+    let missing = [];
+    names.forEach(n => {
+        const block = document.getElementById('block_' + n);
+        if (!document.querySelector(`input[name="${n}"]:checked`)) {
+            missing.push(n);
+            if (block) block.classList.add('req-error');
+        } else {
+            if (block) block.classList.remove('req-error');
+        }
     });
+    return missing;
+}
+
+// ---- Collect data ----
+function collectData() {
+    const data = {
+        timestamp: new Date().toISOString(),
+        survey_date: document.getElementById('survey_date').value,
+        respondent_email: document.getElementById('respondent_email').value.trim(),
+    };
+    const inputs = document.querySelectorAll('#surveyForm input[type="radio"]:checked, #surveyForm input[type="text"], #surveyForm input[type="email"], #surveyForm input[type="date"]');
+    inputs.forEach(el => {
+        if (el.name) data[el.name] = el.value;
+    });
+    return data;
+}
+
+// ---- Google Script URL ----
+const LS_KEY = 'survey_hiep_google_url';
+function getGoogleUrl() {
+    const meta = document.querySelector('meta[name="google-script-url"]');
+    return (meta && meta.getAttribute('content')) || localStorage.getItem(LS_KEY) || '';
+}
+let googleScriptUrl = getGoogleUrl();
+
+// ---- Submit ----
+async function submitToSheets(data) {
+    if (!googleScriptUrl) return false;
+    const resp = await fetch(googleScriptUrl, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+    });
+    return true;
+}
+
+function showToast(msg, isError = false) {
+    const t = document.getElementById('toast');
+    t.innerText = msg;
+    t.className = 'toast show' + (isError ? ' error' : '');
+    setTimeout(() => { t.className = 'toast'; }, 4000);
+}
+
+// ---- Form submit ----
+document.getElementById('surveyForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const missing = validateForm();
     if (missing.length > 0) {
-      e.preventDefault();
-      const banner = document.getElementById('error-banner');
-      banner.style.display = 'block';
-      banner.textContent = `Vui lòng trả lời tất cả các câu hỏi bắt buộc. Còn ${missing.length} câu chưa được trả lời.`;
-      // scroll to first unanswered
-      const first = document.querySelector(`input[name="${missing[0]}"]`);
-      if (first) first.closest('.q-block, tr').scrollIntoView({ behavior: 'smooth', block: 'center' });
-      return;
+        showToast('⚠ Vui lòng trả lời tất cả các câu hỏi bắt buộc (' + missing.length + ' câu còn thiếu).', true);
+        const firstBlock = document.getElementById('block_' + missing[0]);
+        if (firstBlock) firstBlock.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
     }
-    document.getElementById('submit-btn').disabled = true;
-    document.getElementById('submit-btn').textContent = 'Đang gửi…';
-    document.getElementById('field-timestamp').value = new Date().toISOString();
-  });
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Đang gửi...';
 
-  // ── Show success if redirected back with ?success ──────────
-  if (window.location.search.includes('success')) {
-    document.getElementById('survey-form').style.display = 'none';
-    document.getElementById('success-page').style.display = 'block';
-  }
+    const data = collectData();
+
+    try {
+        const sent = await submitToSheets(data);
+        if (sent) {
+            showToast('✅ Gửi phiếu thành công! Cảm ơn Anh/Chị.');
+        } else {
+            // No URL configured — save locally
+            const saved = JSON.parse(localStorage.getItem('survey_hiep_offline') || '[]');
+            saved.push(data);
+            localStorage.setItem('survey_hiep_offline', JSON.stringify(saved));
+            showToast('📋 Phiếu đã được lưu cục bộ (chưa cấu hình Google Script URL).', false);
+        }
+        document.getElementById('surveyForm').style.display = 'none';
+        document.getElementById('thankYou').style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (err) {
+        showToast('❌ Lỗi khi gửi phiếu. Vui lòng thử lại.', true);
+        btn.disabled = false;
+        btn.innerHTML = '&#128229; Gửi Phiếu Khảo Sát';
+    }
+});
+
+// ---- Admin panel ----
+function toggleAdmin() {
+    document.getElementById('adminPanel').classList.toggle('active');
+    document.getElementById('adminOverlay').classList.toggle('active');
+    if (document.getElementById('adminPanel').classList.contains('active')) {
+        document.getElementById('googleScriptUrl').value = googleScriptUrl;
+        updateUrlStatus();
+    }
+}
+function closeAdmin() {
+    document.getElementById('adminPanel').classList.remove('active');
+    document.getElementById('adminOverlay').classList.remove('active');
+}
+function updateUrlStatus() {
+    const el = document.getElementById('urlStatus');
+    if (googleScriptUrl) {
+        el.className = 'status-badge online';
+        el.innerHTML = '<span class="dot"></span> Đã cấu hình';
+    } else {
+        el.className = 'status-badge offline';
+        el.innerHTML = '<span class="dot"></span> Chưa cấu hình';
+    }
+}
+async function verifyAdmin() {
+    const pwd = document.getElementById('adminPassword').value;
+    const meta = document.querySelector('meta[name="admin-password-hash"]');
+    const expectedHash = meta ? meta.getAttribute('content') : '';
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pwd));
+    const hash = [...new Uint8Array(buf)].map(x => x.toString(16).padStart(2, '0')).join('');
+    if (hash === expectedHash) {
+        document.getElementById('adminLoginSection').style.display = 'none';
+        document.getElementById('adminContent').style.display = 'block';
+        document.getElementById('googleScriptUrl').value = googleScriptUrl;
+        updateUrlStatus();
+    } else {
+        showToast('❌ Mật khẩu không đúng.', true);
+    }
+}
+function saveGoogleUrl() {
+    const url = document.getElementById('googleScriptUrl').value.trim();
+    if (url && !url.startsWith('https://script.google.com/')) {
+        showToast('⚠ URL không hợp lệ. Vui lòng kiểm tra lại.', true);
+        return;
+    }
+    googleScriptUrl = url;
+    localStorage.setItem(LS_KEY, url);
+    updateUrlStatus();
+    showToast('✅ Đã lưu Google Script URL.');
+}
+function clearGoogleUrl() {
+    googleScriptUrl = '';
+    localStorage.removeItem(LS_KEY);
+    document.getElementById('googleScriptUrl').value = '';
+    updateUrlStatus();
+    showToast('🗑 Đã xóa URL.');
+}
+async function testConnection() {
+    if (!googleScriptUrl) { showToast('⚠ Chưa cấu hình URL.', true); return; }
+    try {
+        await fetch(googleScriptUrl + '?test=1', { method: 'GET', mode: 'no-cors' });
+        showToast('✅ Kết nối thành công (no-cors).');
+    } catch (e) {
+        showToast('❌ Không thể kết nối.', true);
+    }
+}
+function showGASCode() {
+    const headers = ['timestamp', 'survey_date', 'respondent_email',
+        'info_gender', 'info_age', 'info_position', 'info_exp', 'info_industry', 'info_company_size', 'info_company_age'];
+    const constructs = ['sme', 'ece', 'ovc', 'ev', 'avc', 'dtc', 'ea', 'vf', 'ocr', 'cd'];
+    constructs.forEach(c => { for (let i = 1; i <= 8; i++) headers.push(`${c}_${i}`); });
+
+    const code = `// Google Apps Script — Paste into script.google.com
+// Sheet: "Survey Data (Hiep)"
+// Deploy as Web App: Execute as Me, Anyone can access
+
+const SHEET_NAME = "Survey Data (Hiep)";
+const HEADERS = ${JSON.stringify(headers, null, 2)};
+
+function doPost(e) {
+    try {
+        const data = JSON.parse(e.postData.contents);
+        const ss = SpreadsheetApp.getActiveSpreadsheet();
+        let sheet = ss.getSheetByName(SHEET_NAME);
+        if (!sheet) {
+            sheet = ss.insertSheet(SHEET_NAME);
+            sheet.appendRow(HEADERS);
+            sheet.getRange(1, 1, 1, HEADERS.length).setBackground('#000054').setFontColor('#FFFFFF').setFontWeight('bold');
+        }
+        const row = HEADERS.map(h => data[h] !== undefined ? data[h] : '');
+        sheet.appendRow(row);
+        return ContentService.createTextOutput(JSON.stringify({status:'ok'})).setMimeType(ContentService.MimeType.JSON);
+    } catch(err) {
+        return ContentService.createTextOutput(JSON.stringify({status:'error', message: err.toString()})).setMimeType(ContentService.MimeType.JSON);
+    }
+}
+
+function doGet(e) {
+    return ContentService.createTextOutput(JSON.stringify({status:'ok', message:'Survey Hiep GAS is running'})).setMimeType(ContentService.MimeType.JSON);
+}`;
+
+    const win = window.open('', '_blank', 'width=700,height=600');
+    win.document.write(`<html><head><title>Google Apps Script</title>
+    <style>body{font-family:monospace;background:#1e1e2e;color:#cdd6f4;padding:20px;margin:0;}
+    pre{white-space:pre-wrap;font-size:12px;line-height:1.6;}
+    button{background:#89b4fa;color:#1e1e2e;border:none;padding:8px 20px;border-radius:6px;cursor:pointer;font-weight:bold;}</style>
+    </head><body>
+    <h2 style="color:#89b4fa;font-family:sans-serif;font-size:15px;margin-bottom:12px;">📄 Google Apps Script Mẫu</h2>
+    <button onclick="navigator.clipboard.writeText(document.querySelector('pre').innerText);this.innerText='✅ Đã sao chép!'">📋 Sao chép</button>
+    <pre style="margin-top:14px;">${code.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</pre>
+    </body></html>`);
+}
+
+// ---- Init ----
+document.addEventListener('DOMContentLoaded', () => {
+    renderSections();
+    document.getElementById('survey_date').value = new Date().toISOString().split('T')[0];
+    document.getElementById('surveyForm').addEventListener('change', updateProgress);
+    updateProgress();
+});
 </script>
 </body>
 </html>
